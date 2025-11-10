@@ -1,0 +1,26 @@
+<svg width="280" height="140" viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+  <g
+    fill="none"
+    stroke="#050505"
+    stroke-width="6.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <!-- dog outline -->
+    <path d="M12 68V28h56l28 18v54l-28 18H12z" />
+    <path d="M40 66h30" />
+    <circle cx="38" cy="48" r="4" fill="#050505" stroke="none" />
+    <!-- AFTER -->
+    <path d="M112 32l-12 32 12 32 12-32-12-32z" />
+    <path d="M112 64h26" />
+    <path d="M150 32v64" />
+    <path d="M170 32h34l-34 32h34" />
+    <path d="M226 32h22l-22 20h22" />
+    <path d="M254 32v64" />
+    <!-- WAGS -->
+    <path d="M108 128l8-32 8 32 8-32 8 32" />
+    <path d="M156 128V96l20 32V96h16" />
+    <path d="M216 96h28l-14 32-14-32z" />
+    <path d="M250 96v32h24" />
+  </g>
+</svg>

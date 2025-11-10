@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>问卷设计器</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #edf2fb;
+        --surface: #ffffff;
+        --accent: #6c7ae0;
+        --accent-strong: #5661c5;
+        --text: #1f2a44;
+        --muted: #7c88b0;
+        --border: rgba(31, 42, 68, 0.12);
+        --soft: rgba(108, 122, 224, 0.08);
+        font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui,
+          -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, #fdf2ff 0%, #edf4ff 40%, var(--bg) 100%);
+        padding: 48px 24px 64px;
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .qr-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+        gap: 32px;
+        background: var(--surface);
+        border-radius: 28px;
+        padding: 32px 40px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(31, 42, 68, 0.08);
+        align-items: center;
+      }
+
+      .qr-content h2 {
+        margin: 8px 0 12px;
+      }
+
+      .qr-helper {
+        margin: 0 0 18px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .qr-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .qr-form label {
+        font-size: 0.9rem;
+        color: var(--muted);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .qr-form input {
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        font-size: 0.95rem;
+      }
+
+      .qr-form input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--soft);
+      }
+
+      .qr-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .qr-preview {
+        border-radius: 24px;
+        border: 1px dashed rgba(108, 122, 224, 0.25);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+        background: rgba(247, 249, 255, 0.9);
+      }
+
+      .qr-canvas {
+        width: 180px;
+        height: 180px;
+        display: block;
+        object-fit: contain;
+      }
+
+      .qr-note {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .page-tabs {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+        padding: 6px;
+        border: 1px solid var(--border);
+      }
+
+      .tab-btn {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 600;
+        padding: 12px 20px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+
+      .tab-btn.active {
+        background: var(--text);
+        color: white;
+      }
+
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: center;
+        background: var(--surface);
+        border-radius: 28px;
+        padding: 32px 40px;
+        box-shadow: 0 25px 60px rgba(31, 42, 68, 0.12);
+        border: 1px solid var(--border);
+      }
+
+      .hero-brand {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex: 1;
+      }
+
+      .hero-logo {
+        width: 110px;
+        max-height: 110px;
+        object-fit: contain;
+      }
+
+      .hero-copy {
+        flex: 1;
+      }
+
+      .hero h1 {
+        margin: 6px 0 12px;
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 560px;
+        line-height: 1.6;
+      }
+
+      .eyebrow {
+        font-size: 0.85rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+      }
+
+      .toggle {
+        background: rgba(108, 122, 224, 0.1);
+        color: var(--accent-strong);
+        border: none;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .toggle:hover {
+        transform: translateY(-1px);
+        background: rgba(108, 122, 224, 0.16);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 24px;
+      }
+
+      .panel {
+        background: var(--surface);
+        border-radius: 28px;
+        padding: 32px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(31, 42, 68, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        overflow: visible;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .panel-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .panel h2 {
+        margin: 6px 0 0;
+      }
+
+      .ghost {
+        background: transparent;
+        border: 1px dashed var(--accent);
+        color: var(--accent-strong);
+        padding: 10px 18px;
+        border-radius: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: border 0.2s ease, color 0.2s ease;
+      }
+
+      .ghost:hover {
+        border-color: var(--accent-strong);
+        color: var(--accent-strong);
+      }
+
+      .ghost-small {
+        padding: 8px 14px;
+        border-radius: 12px;
+      }
+
+      .scroll-control {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 220px;
+      }
+
+      .scroll-label {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .scroll-range {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--accent) 0%, rgba(108, 122, 224, 0.35) 100%);
+        position: relative;
+        cursor: pointer;
+      }
+
+      .scroll-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 2px solid var(--accent);
+        box-shadow: 0 4px 15px rgba(31, 42, 68, 0.2);
+      }
+
+      .scroll-range::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 2px solid var(--accent);
+        box-shadow: 0 4px 15px rgba(31, 42, 68, 0.2);
+      }
+
+      .scroll-range:disabled {
+        cursor: not-allowed;
+        opacity: 0.35;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .question {
+        padding: 24px 24px 22px;
+        border-radius: 22px;
+        border: 1px solid rgba(108, 122, 224, 0.15);
+        background: linear-gradient(135deg, rgba(108, 122, 224, 0.04), rgba(255, 255, 255, 0.9));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+      }
+
+      .question-title {
+        font-size: 1.05rem;
+        margin: 0 0 16px;
+        font-weight: 600;
+      }
+
+      .options {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: border 0.2s ease, transform 0.2s ease;
+      }
+
+      .option:hover {
+        border-color: rgba(108, 122, 224, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .option input {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid var(--muted);
+        display: grid;
+        place-items: center;
+        margin: 0;
+      }
+
+      .option input::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform 0.15s ease;
+      }
+
+      .option input:checked {
+        border-color: var(--accent);
+      }
+
+      .option input:checked::after {
+        transform: scale(1);
+      }
+
+      .badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background: rgba(108, 122, 224, 0.15);
+        color: var(--accent-strong);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+      }
+
+      .option-text {
+        font-size: 0.95rem;
+      }
+
+      .submit {
+        border: none;
+        border-radius: 18px;
+        padding: 16px;
+        background: linear-gradient(120deg, #6c7ae0, #8da2fb);
+        color: white;
+        font-size: 1rem;
+        letter-spacing: 0.04em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 35px rgba(108, 122, 224, 0.3);
+      }
+
+      .editor-panel {
+        gap: 20px;
+      }
+
+      .logo-uploader {
+        border: 1px dashed var(--border);
+        border-radius: 20px;
+        padding: 20px 22px;
+        background: rgba(247, 249, 255, 0.84);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .logo-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .logo-copy h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .logo-helper {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .logo-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .upload-btn {
+        border-radius: 14px;
+        padding: 10px 18px;
+        background: rgba(108, 122, 224, 0.12);
+        color: var(--accent-strong);
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease, border 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .upload-btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(108, 122, 224, 0.5);
+      }
+
+      .copy-editor {
+        border: 1px dashed var(--border);
+        border-radius: 20px;
+        padding: 20px 22px;
+        background: rgba(247, 249, 255, 0.84);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .copy-head h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .copy-helper {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .copy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px 16px;
+      }
+
+      .copy-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+      }
+
+      .copy-field textarea {
+        min-height: 72px;
+        resize: vertical;
+      }
+
+      .stats-panel {
+        background: var(--surface);
+        border-radius: 28px;
+        padding: 32px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(31, 42, 68, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .stats-helper {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .stats-list {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .stats-card {
+        border: 1px solid rgba(108, 122, 224, 0.18);
+        border-radius: 22px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .stats-card h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .stats-total {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .stats-option {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px 0;
+        border-top: 1px solid rgba(15, 23, 42, 0.06);
+      }
+
+      .stats-option:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+
+      .option-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.92rem;
+      }
+
+      .option-head strong {
+        color: var(--accent-strong);
+        letter-spacing: 0.08em;
+      }
+
+      .progress {
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, #6c7ae0, #8da2fb);
+      }
+
+      .stats-empty {
+        margin: 0;
+        padding: 24px;
+        text-align: center;
+        border-radius: 18px;
+        border: 1px dashed var(--border);
+        color: var(--muted);
+        background: rgba(247, 249, 255, 0.8);
+      }
+
+      .editor-divider {
+        height: 1px;
+        width: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(108, 122, 224, 0),
+          rgba(108, 122, 224, 0.35),
+          rgba(108, 122, 224, 0)
+        );
+      }
+
+      .editor-list {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        overflow-y: auto;
+        padding-right: 4px;
+        scroll-behavior: smooth;
+        max-height: clamp(280px, 48vh, 520px);
+        min-height: 240px;
+        border-radius: 16px;
+        padding-bottom: 4px;
+      }
+
+      .editor-card {
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 20px;
+        background: rgba(247, 249, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .editor-card header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .editor-card header h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .remove {
+        border: none;
+        background: rgba(255, 67, 86, 0.12);
+        color: #d8344e;
+        border-radius: 12px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      label span {
+        font-size: 0.85rem;
+        color: var(--muted);
+        display: inline-block;
+        margin-bottom: 6px;
+      }
+
+      textarea,
+      input[type="text"] {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: white;
+        font-size: 0.95rem;
+        resize: vertical;
+        min-height: 42px;
+      }
+
+      textarea {
+        min-height: 64px;
+      }
+
+      textarea:focus,
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--soft);
+      }
+
+      @media (max-width: 1024px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .editor-panel {
+          max-height: none;
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 32px 16px 48px;
+        }
+
+        .hero {
+          flex-direction: column;
+        }
+
+        .hero-brand {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .panel {
+          padding: 24px;
+        }
+
+        .qr-card {
+          grid-template-columns: 1fr;
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div class="hero-brand">
+          <img src="./assets/logo.svg" alt="After Wags logo" class="hero-logo" />
+          <div class="hero-copy">
+            <p class="eyebrow" id="hero-eyebrow">Live Survey Builder</p>
+            <h1 id="hero-title">体验感问卷设计器</h1>
+            <p id="hero-desc">
+              立即预览任何改动，使用中英文双语内容，并且自由增删问题，打造符合品牌调性的现代化问卷体验。
+            </p>
+          </div>
+        </div>
+        <button id="lang-toggle" class="toggle" type="button">切换到 English</button>
+      </header>
+
+      <section class="qr-card">
+        <div class="qr-content">
+          <p class="eyebrow" id="qr-label">扫码直达</p>
+          <h2 id="qr-title">二维码入口</h2>
+          <p class="qr-helper" id="qr-helper">
+            将问卷链接分享到任何渠道，扫码即可直接打开当前页面。可自定义网址来匹配部署地址。
+          </p>
+          <div class="qr-form">
+            <label>
+              <span id="qr-input-label">跳转链接</span>
+              <input id="qr-url" type="url" placeholder="https://example.com/survey" />
+            </label>
+            <div class="qr-actions">
+              <button id="qr-refresh" class="ghost" type="button">更新二维码</button>
+            </div>
+          </div>
+        </div>
+        <div class="qr-preview">
+          <img id="qr-code" class="qr-canvas" alt="二维码" />
+          <p class="qr-note" id="qr-note">手机扫码立即打开问卷</p>
+        </div>
+      </section>
+
+      <nav class="page-tabs">
+        <button id="tab-builder" class="tab-btn active" type="button">问卷设计</button>
+        <button id="tab-stats" class="tab-btn" type="button">回答统计</button>
+      </nav>
+
+      <section id="builder-view" class="layout builder-view">
+        <div class="panel preview-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow" id="preview-label">问卷预览</p>
+              <h2 id="preview-title">受访者看到的样子</h2>
+            </div>
+          </div>
+
+          <form id="question-list"></form>
+          <button id="submit-btn" class="submit" type="button">提交反馈</button>
+        </div>
+
+        <div class="panel editor-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow" id="editor-label">编辑区</p>
+              <h2 id="editor-title">实时更新问题与选项</h2>
+            </div>
+            <div class="panel-actions">
+              <div class="scroll-control">
+                <label id="scroll-editor-label" class="scroll-label" for="scroll-editor-range">下滑查看更多</label>
+                <input id="scroll-editor-range" class="scroll-range" type="range" min="0" max="100" value="0" />
+              </div>
+              <button id="add-question" class="ghost" type="button">新增问题</button>
+            </div>
+          </div>
+          <div id="copy-editor" class="copy-editor"></div>
+          <div class="logo-uploader">
+            <div class="logo-head">
+              <div class="logo-copy">
+                <p class="eyebrow" id="logo-label">品牌 Logo</p>
+                <h3 id="logo-title">上传自定义图像</h3>
+                <p class="logo-helper" id="logo-helper">支持 PNG / JPG / SVG，建议透明背景。</p>
+              </div>
+              <div class="logo-actions">
+                <label class="upload-btn">
+                  <input id="logo-input" type="file" accept="image/png,image/jpeg,image/svg+xml" hidden />
+                  <span id="logo-upload-text">上传图片</span>
+                </label>
+                <button id="logo-reset" type="button" class="ghost ghost-small">恢复默认</button>
+              </div>
+            </div>
+          </div>
+          <div class="editor-divider" aria-hidden="true"></div>
+          <div id="editor-list" class="editor-list"></div>
+        </div>
+      </section>
+
+      <section id="stats-view" class="stats-panel" hidden>
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow" id="stats-label">回答统计</p>
+            <h2 id="stats-title">整体回答概览</h2>
+          </div>
+          <button id="reset-stats" class="ghost" type="button">清空统计</button>
+        </div>
+        <p class="stats-helper" id="stats-helper">实时查看每个问题的 A/B/C 选择次数，洞察回答趋势。</p>
+        <div id="stats-content" class="stats-list"></div>
+        <p id="stats-empty" class="stats-empty" hidden>还没有任何提交记录。</p>
+      </section>
+    </div>
+
+    <script>
+      const uiMeta = {
+        zh: {
+          toggle: "切换到 English",
+          remove: "删除",
+          questionTitle: (index) => `问题 ${index}`,
+          questionPlaceholder: "请输入问题内容",
+          optionPlaceholder: (letter) => `${letter} 选项内容`,
+          tabBuilder: "问卷设计",
+          tabStats: "回答统计",
+          statsLabel: "回答统计",
+          statsTitle: "整体回答概览",
+          statsHelper: "实时查看每个问题的 A/B/C 选择次数，洞察回答趋势。",
+          statsEmpty: "还没有任何提交记录。",
+          resetStats: "清空统计",
+          resetStatsConfirm: "确定要清空所有统计数据吗？该操作无法撤销。",
+          submitSuccess: "提交成功，感谢反馈！",
+          responsesLabel: (count) => `累计 ${count} 次回答`,
+          qrLabel: "扫码直达",
+          qrTitle: "二维码入口",
+          qrHelper: "将问卷链接分享到任何渠道，扫码即可直接打开当前页面。可自定义网址来匹配部署地址。",
+          qrInputLabel: "跳转链接",
+          qrRefresh: "更新二维码",
+          qrNote: "手机扫码立即打开问卷",
+          qrInvalid: "请输入有效的 http(s) 链接。",
+          logoLabel: "品牌 Logo",
+          logoTitle: "上传自定义图像",
+          logoHelper: "支持 PNG / JPG / SVG（≤2MB），建议透明背景。",
+          logoUpload: "上传图片",
+          logoReset: "恢复默认",
+          copyLabel: "页面文案",
+          copyTitle: "编辑展示文字",
+          copyHelper: "针对当前语言编辑抬头、按钮等所有显示给用户的文字内容。",
+          copyFieldLabels: {
+            heroEyebrow: "信息条",
+            heroTitle: "主标题",
+            heroDesc: "描述 / 引言",
+            previewLabel: "预览区标签",
+            previewTitle: "预览区副标题",
+            editorLabel: "编辑区标签",
+            editorTitle: "编辑区副标题",
+            scrollDown: "“下滑条”提示文案",
+            addQuestion: "“新增问题”按钮",
+            submit: "提交按钮"
+          }
+        },
+        en: {
+          toggle: "切换到中文",
+          remove: "Remove",
+          questionTitle: (index) => `Question ${index}`,
+          questionPlaceholder: "Enter your question",
+          optionPlaceholder: (letter) => `Option ${letter}`,
+          tabBuilder: "Survey builder",
+          tabStats: "Response stats",
+          statsLabel: "Response stats",
+          statsTitle: "Overall answer overview",
+          statsHelper: "Track how often each option is selected to understand trends in real time.",
+          statsEmpty: "No submissions yet.",
+          resetStats: "Clear stats",
+          resetStatsConfirm: "Clear all recorded stats? This cannot be undone.",
+          submitSuccess: "Thanks! Your feedback has been recorded.",
+          responsesLabel: (count) => `${count} total responses`,
+          qrLabel: "Scan to open",
+          qrTitle: "QR entry point",
+          qrHelper: "Share this survey anywhere—scanning the code opens the link instantly. Customize the URL to match your deployment.",
+          qrInputLabel: "Destination URL",
+          qrRefresh: "Update QR code",
+          qrNote: "Scan on mobile to open the survey",
+          qrInvalid: "Please enter a valid http(s) link.",
+          logoLabel: "Brand Logo",
+          logoTitle: "Upload your own mark",
+          logoHelper: "PNG / JPG / SVG up to 2 MB. Transparent background recommended.",
+          logoUpload: "Upload image",
+          logoReset: "Reset to default",
+          copyLabel: "Page Copy",
+          copyTitle: "Edit visible text",
+          copyHelper: "Adjust every piece of wording the respondent sees for the current language.",
+          copyFieldLabels: {
+            heroEyebrow: "Eyebrow / Tagline",
+            heroTitle: "Main title",
+            heroDesc: "Description",
+            previewLabel: "Preview label",
+            previewTitle: "Preview subtitle",
+            editorLabel: "Editor label",
+            editorTitle: "Editor subtitle",
+            scrollDown: "\"Scroll handle\" label",
+            addQuestion: "\"Add question\" button",
+            submit: "Submit button"
+          }
+        }
+      };
+
+      const copyFieldConfig = [
+        { id: "heroEyebrow", type: "text" },
+        { id: "heroTitle", type: "text" },
+        { id: "heroDesc", type: "textarea" },
+        { id: "previewLabel", type: "text" },
+        { id: "previewTitle", type: "text" },
+        { id: "editorLabel", type: "text" },
+        { id: "editorTitle", type: "text" },
+        { id: "scrollDown", type: "text" },
+        { id: "addQuestion", type: "text" },
+        { id: "submit", type: "text" }
+      ];
+
+      const createId = () =>
+        window.crypto?.randomUUID
+          ? window.crypto.randomUUID()
+          : `q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+
+      const defaultQuestions = [
+        {
+          id: "default-q1",
+          zh: {
+            text: "当你第一次打开页面时，整体视觉是否符合“现代简约”的预期？",
+            options: {
+              A: "完全符合，视觉语言非常统一",
+              B: "大体符合，但仍可更精简",
+              C: "不符合，需要重新审视设计"
+            }
+          },
+          en: {
+            text: "When you first land on the page, does the visual identity feel modern and minimal?",
+            options: {
+              A: "Absolutely—cohesive and contemporary",
+              B: "Mostly—could be simplified a bit more",
+              C: "Not really—we need a new direction"
+            }
+          }
+        },
+        {
+          id: "default-q2",
+          zh: {
+            text: "导航结构是否帮你快速找到目标信息？",
+            options: {
+              A: "非常清晰，不需要额外提示",
+              B: "偶尔需要停顿思考",
+              C: "不够直观，很难定位内容"
+            }
+          },
+          en: {
+            text: "Does the navigation structure help you reach content quickly?",
+            options: {
+              A: "Yes—straightforward and intuitive",
+              B: "Sometimes—I pause to double check",
+              C: "Not yet—it feels hard to orient"
+            }
+          }
+        }
+      ];
+
+      const defaultContent = {
+        zh: {
+          heroEyebrow: "Live Survey Builder",
+          heroTitle: "体验感问卷设计器",
+          heroDesc:
+            "立即预览任何改动，使用中英文双语内容，并且自由增删问题，打造符合品牌调性的现代化问卷体验。",
+          previewLabel: "问卷预览",
+          previewTitle: "受访者看到的样子",
+          editorLabel: "编辑区",
+          editorTitle: "实时更新问题与选项",
+          scrollDown: "拖动滑条查看更多问题",
+          addQuestion: "新增问题",
+          submit: "提交反馈"
+        },
+        en: {
+          heroEyebrow: "Live Survey Builder",
+          heroTitle: "Modern Survey Builder",
+          heroDesc:
+            "Tweak every detail live, manage bilingual content, and add or remove questions for a clean, modern survey experience.",
+          previewLabel: "Preview",
+          previewTitle: "What participants will see",
+          editorLabel: "Editor",
+          editorTitle: "Update questions & options",
+          scrollDown: "Drag to scroll questions",
+          addQuestion: "Add question",
+          submit: "Submit feedback"
+        }
+      };
+
+      const DEFAULT_LOGO_SRC = "./assets/logo.svg";
+      const LOGO_STORAGE_KEY = "survey-builder-logo";
+      const LOGO_MAX_BYTES = 2 * 1024 * 1024;
+      const STATS_STORAGE_KEY = "survey-builder-answer-stats";
+      const QR_URL_STORAGE_KEY = "survey-builder-qr-url";
+
+      const createEmptyCounts = () => ({ A: 0, B: 0, C: 0 });
+
+      let answerStats = {};
+
+      const loadStats = () => {
+        try {
+          const stored = localStorage.getItem(STATS_STORAGE_KEY);
+          return stored ? JSON.parse(stored) : {};
+        } catch (error) {
+          console.warn("Unable to load stats", error);
+          return {};
+        }
+      };
+
+      const persistStats = () => {
+        try {
+          localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(answerStats));
+        } catch (error) {
+          console.warn("Unable to persist stats", error);
+        }
+      };
+
+      const loadStoredQrUrl = () => {
+        try {
+          return localStorage.getItem(QR_URL_STORAGE_KEY);
+        } catch (error) {
+          console.warn("Unable to load QR url", error);
+          return null;
+        }
+      };
+
+      const persistQrUrl = (url) => {
+        try {
+          localStorage.setItem(QR_URL_STORAGE_KEY, url);
+        } catch (error) {
+          console.warn("Unable to store QR url", error);
+        }
+      };
+
+      let currentLanguage = "zh";
+      let currentScreen = "builder";
+      let questions = JSON.parse(JSON.stringify(defaultQuestions));
+      let contentText = JSON.parse(JSON.stringify(defaultContent));
+      answerStats = loadStats();
+      let currentQrUrl = "";
+
+      const ui = {
+        logoImage: document.querySelector(".hero-logo"),
+        heroEyebrow: document.getElementById("hero-eyebrow"),
+        heroTitle: document.getElementById("hero-title"),
+        heroDesc: document.getElementById("hero-desc"),
+        previewLabel: document.getElementById("preview-label"),
+        previewTitle: document.getElementById("preview-title"),
+        editorLabel: document.getElementById("editor-label"),
+        editorTitle: document.getElementById("editor-title"),
+        logoLabel: document.getElementById("logo-label"),
+        logoTitle: document.getElementById("logo-title"),
+        logoHelper: document.getElementById("logo-helper"),
+        logoUploadText: document.getElementById("logo-upload-text"),
+        logoResetButton: document.getElementById("logo-reset"),
+        logoInput: document.getElementById("logo-input"),
+        scrollDownLabel: document.getElementById("scroll-editor-label"),
+        scrollRange: document.getElementById("scroll-editor-range"),
+        addQuestion: document.getElementById("add-question"),
+        submit: document.getElementById("submit-btn"),
+        langToggle: document.getElementById("lang-toggle"),
+        builderTab: document.getElementById("tab-builder"),
+        statsTab: document.getElementById("tab-stats"),
+        builderView: document.getElementById("builder-view"),
+        statsView: document.getElementById("stats-view"),
+        statsLabel: document.getElementById("stats-label"),
+        statsTitle: document.getElementById("stats-title"),
+        statsHelper: document.getElementById("stats-helper"),
+        statsContent: document.getElementById("stats-content"),
+        statsEmpty: document.getElementById("stats-empty"),
+        resetStats: document.getElementById("reset-stats"),
+        qrLabel: document.getElementById("qr-label"),
+        qrTitle: document.getElementById("qr-title"),
+        qrHelper: document.getElementById("qr-helper"),
+        qrInputLabel: document.getElementById("qr-input-label"),
+        qrRefresh: document.getElementById("qr-refresh"),
+        qrNote: document.getElementById("qr-note"),
+        qrUrlInput: document.getElementById("qr-url"),
+        qrCode: document.getElementById("qr-code")
+      };
+
+      const questionList = document.getElementById("question-list");
+      const editorList = document.getElementById("editor-list");
+      const copyEditor = document.getElementById("copy-editor");
+
+      const ensureStatsStructure = () => {
+        questions.forEach((question) => {
+          if (!answerStats[question.id]) {
+            answerStats[question.id] = createEmptyCounts();
+          }
+        });
+      };
+
+      const getTotalForQuestion = (questionId) => {
+        const counts = answerStats[questionId];
+        if (!counts) return 0;
+        return ["A", "B", "C"].reduce((sum, option) => sum + (counts[option] || 0), 0);
+      };
+
+      ensureStatsStructure();
+
+      const isValidUrl = (value) => {
+        if (!value) return false;
+        try {
+          const parsed = new URL(value);
+          return parsed.protocol === "http:" || parsed.protocol === "https:";
+        } catch (error) {
+          return false;
+        }
+      };
+
+      const renderQrCode = (value) => {
+        if (!ui.qrCode) return;
+        const qrService = "https://api.qrserver.com/v1/create-qr-code/";
+        const params = new URLSearchParams({
+          size: "220x220",
+          data: value,
+          margin: "12"
+        });
+        ui.qrCode.src = `${qrService}?${params.toString()}`;
+        ui.qrCode.alt = `QR code linking to ${value}`;
+        currentQrUrl = value;
+      };
+
+      const initQrSection = () => {
+        if (!ui.qrUrlInput) return;
+        const stored = loadStoredQrUrl();
+        const initialUrl = stored && isValidUrl(stored) ? stored : window.location.href;
+        ui.qrUrlInput.value = initialUrl;
+        persistQrUrl(initialUrl);
+        renderQrCode(initialUrl);
+      };
+
+      const updateQrFromInput = () => {
+        if (!ui.qrUrlInput) return;
+        const url = ui.qrUrlInput.value.trim();
+        const meta = uiMeta[currentLanguage];
+        if (!isValidUrl(url)) {
+          alert(meta.qrInvalid);
+          ui.qrUrlInput.focus();
+          return;
+        }
+        persistQrUrl(url);
+        renderQrCode(url);
+      };
+
+      const setText = (el, value) => {
+        if (el) {
+          el.textContent = value;
+        }
+      };
+
+      const applyLogoSrc = (src) => {
+        if (ui.logoImage) {
+          ui.logoImage.src = src || DEFAULT_LOGO_SRC;
+        }
+      };
+
+      const loadStoredLogo = () => {
+        try {
+          const stored = localStorage.getItem(LOGO_STORAGE_KEY);
+          if (stored) {
+            applyLogoSrc(stored);
+            return;
+          }
+        } catch (error) {
+          console.warn("Unable to read stored logo", error);
+        }
+        applyLogoSrc(DEFAULT_LOGO_SRC);
+      };
+
+      const persistLogo = (dataUrl) => {
+        try {
+          if (dataUrl) {
+            localStorage.setItem(LOGO_STORAGE_KEY, dataUrl);
+          } else {
+            localStorage.removeItem(LOGO_STORAGE_KEY);
+          }
+        } catch (error) {
+          console.warn("Unable to persist logo", error);
+        }
+      };
+
+      const syncScrollHandle = () => {
+        if (!ui.scrollRange) return;
+        const maxScroll = editorList.scrollHeight - editorList.clientHeight;
+        const disabled = maxScroll <= 2;
+        ui.scrollRange.disabled = disabled;
+        if (disabled) {
+          ui.scrollRange.value = 0;
+          return;
+        }
+        const progress = (editorList.scrollTop / maxScroll) * 100;
+        ui.scrollRange.value = progress;
+      };
+
+      const renderPreview = () => {
+        questionList.innerHTML = "";
+        questions.forEach((question) => {
+          const block = document.createElement("section");
+          block.className = "question";
+
+          const title = document.createElement("h3");
+          title.className = "question-title";
+          title.textContent = question[currentLanguage].text || "";
+          block.appendChild(title);
+
+          const grid = document.createElement("div");
+          grid.className = "options";
+
+          ["A", "B", "C"].forEach((letter) => {
+            const label = document.createElement("label");
+            label.className = "option";
+
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = question.id;
+            input.value = letter;
+
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = letter;
+
+            const optionText = document.createElement("span");
+            optionText.className = "option-text";
+            optionText.textContent = question[currentLanguage].options[letter] || "";
+
+            label.appendChild(input);
+            label.appendChild(badge);
+            label.appendChild(optionText);
+            grid.appendChild(label);
+          });
+
+          block.appendChild(grid);
+          questionList.appendChild(block);
+        });
+      };
+
+      const renderEditor = () => {
+        const meta = uiMeta[currentLanguage];
+        editorList.innerHTML = "";
+        questions.forEach((question, index) => {
+          const card = document.createElement("article");
+          card.className = "editor-card";
+
+          const head = document.createElement("header");
+
+          const title = document.createElement("h3");
+          title.textContent = meta.questionTitle(index + 1);
+
+          const removeButton = document.createElement("button");
+          removeButton.className = "remove";
+          removeButton.type = "button";
+          removeButton.textContent = meta.remove;
+          removeButton.addEventListener("click", () => {
+            questions = questions.filter((q) => q.id !== question.id);
+            delete answerStats[question.id];
+            persistStats();
+            renderEditor();
+            renderPreview();
+            renderStats();
+          });
+
+          head.appendChild(title);
+          head.appendChild(removeButton);
+          card.appendChild(head);
+
+          const questionLabel = document.createElement("label");
+          const questionSpan = document.createElement("span");
+          questionSpan.textContent = meta.questionPlaceholder;
+          const questionInput = document.createElement("textarea");
+          questionInput.value = question[currentLanguage].text || "";
+          questionInput.addEventListener("input", (event) => {
+            question[currentLanguage].text = event.target.value;
+            renderPreview();
+            renderStats();
+          });
+          questionLabel.appendChild(questionSpan);
+          questionLabel.appendChild(questionInput);
+          card.appendChild(questionLabel);
+
+          ["A", "B", "C"].forEach((letter) => {
+            const optionLabel = document.createElement("label");
+            const labelSpan = document.createElement("span");
+            labelSpan.textContent = meta.optionPlaceholder(letter);
+            const optionInput = document.createElement("input");
+            optionInput.type = "text";
+            optionInput.value = question[currentLanguage].options[letter] || "";
+            optionInput.addEventListener("input", (event) => {
+              question[currentLanguage].options[letter] = event.target.value;
+              renderPreview();
+              renderStats();
+            });
+            optionLabel.appendChild(labelSpan);
+            optionLabel.appendChild(optionInput);
+            card.appendChild(optionLabel);
+          });
+
+          editorList.appendChild(card);
+        });
+
+        syncScrollHandle();
+      };
+
+      const renderStats = () => {
+        ensureStatsStructure();
+        if (!ui.statsContent) {
+          return;
+        }
+        const meta = uiMeta[currentLanguage];
+        ui.statsContent.innerHTML = "";
+        questions.forEach((question) => {
+          const counts = answerStats[question.id] || createEmptyCounts();
+          const total = getTotalForQuestion(question.id);
+
+          const card = document.createElement("article");
+          card.className = "stats-card";
+
+          const title = document.createElement("h3");
+          title.textContent = question[currentLanguage].text || "";
+          card.appendChild(title);
+
+          const totalText = document.createElement("p");
+          totalText.className = "stats-total";
+          totalText.textContent = meta.responsesLabel(total);
+          card.appendChild(totalText);
+
+          ["A", "B", "C"].forEach((letter) => {
+            const optionWrap = document.createElement("div");
+            optionWrap.className = "stats-option";
+
+            const head = document.createElement("div");
+            head.className = "option-head";
+
+            const label = document.createElement("strong");
+            label.textContent = letter;
+
+            const detail = document.createElement("span");
+            const count = counts[letter] || 0;
+            const percent = total ? Math.round((count / total) * 100) : 0;
+            const optionText = question[currentLanguage].options[letter] || "";
+            detail.textContent = `${optionText} · ${count} (${percent}%)`;
+
+            head.appendChild(label);
+            head.appendChild(detail);
+
+            const progress = document.createElement("div");
+            progress.className = "progress";
+            const bar = document.createElement("span");
+            bar.style.width = `${percent}%`;
+            progress.appendChild(bar);
+
+            optionWrap.appendChild(head);
+            optionWrap.appendChild(progress);
+            card.appendChild(optionWrap);
+          });
+
+          ui.statsContent.appendChild(card);
+        });
+
+        if (ui.statsEmpty) {
+          const totalSubmissions = questions.reduce(
+            (sum, q) => sum + getTotalForQuestion(q.id),
+            0
+          );
+          const hasResponses = totalSubmissions > 0;
+          ui.statsEmpty.hidden = hasResponses;
+          if (!hasResponses) {
+            ui.statsContent.innerHTML = "";
+          }
+        }
+      };
+
+      const switchScreen = (target) => {
+        if (!ui.builderView || !ui.statsView) return;
+        if (target === currentScreen) {
+          if (target === "stats") {
+            renderStats();
+          }
+          return;
+        }
+        currentScreen = target;
+        const showBuilder = target === "builder";
+        ui.builderView.hidden = !showBuilder;
+        ui.statsView.hidden = showBuilder;
+        if (ui.builderTab) {
+          ui.builderTab.classList.toggle("active", showBuilder);
+        }
+        if (ui.statsTab) {
+          ui.statsTab.classList.toggle("active", !showBuilder);
+        }
+        if (!showBuilder) {
+          renderStats();
+        }
+      };
+
+      const renderCopyEditor = () => {
+        const meta = uiMeta[currentLanguage];
+        const copy = contentText[currentLanguage];
+        copyEditor.innerHTML = "";
+
+        const head = document.createElement("div");
+        head.className = "copy-head";
+        const eyebrow = document.createElement("p");
+        eyebrow.className = "eyebrow";
+        eyebrow.textContent = meta.copyLabel;
+        const heading = document.createElement("h3");
+        heading.textContent = meta.copyTitle;
+        head.appendChild(eyebrow);
+        head.appendChild(heading);
+        copyEditor.appendChild(head);
+
+        const helper = document.createElement("p");
+        helper.className = "copy-helper";
+        helper.textContent = meta.copyHelper;
+        copyEditor.appendChild(helper);
+
+        const grid = document.createElement("div");
+        grid.className = "copy-grid";
+
+        copyFieldConfig.forEach((field) => {
+          const wrapper = document.createElement("label");
+          wrapper.className = "copy-field";
+
+          const span = document.createElement("span");
+          span.textContent = meta.copyFieldLabels[field.id];
+
+          const control =
+            field.type === "textarea" ? document.createElement("textarea") : document.createElement("input");
+          if (field.type !== "textarea") {
+            control.type = "text";
+          }
+          control.value = copy[field.id] || "";
+          control.addEventListener("input", (event) => {
+            contentText[currentLanguage][field.id] = event.target.value;
+            updateUIText();
+          });
+
+          wrapper.appendChild(span);
+          wrapper.appendChild(control);
+          grid.appendChild(wrapper);
+        });
+
+        copyEditor.appendChild(grid);
+      };
+
+      const handleSubmit = () => {
+        if (!questionList) return;
+        ensureStatsStructure();
+        if (!questionList.reportValidity()) {
+          return;
+        }
+
+        const meta = uiMeta[currentLanguage];
+        const formData = new FormData(questionList);
+        let hasMissing = false;
+
+        questions.forEach((question) => {
+          const value = formData.get(question.id);
+          if (!value) {
+            hasMissing = true;
+            return;
+          }
+          const bucket = answerStats[question.id] || createEmptyCounts();
+          bucket[value] = (bucket[value] || 0) + 1;
+          answerStats[question.id] = bucket;
+        });
+
+        if (hasMissing) {
+          questionList.reportValidity();
+          return;
+        }
+
+        persistStats();
+        questionList.reset();
+        renderStats();
+        alert(meta.submitSuccess);
+        switchScreen("stats");
+      };
+
+      const updateUIText = () => {
+        const copy = contentText[currentLanguage];
+        const meta = uiMeta[currentLanguage];
+        setText(ui.heroEyebrow, copy.heroEyebrow);
+        setText(ui.heroTitle, copy.heroTitle);
+        setText(ui.heroDesc, copy.heroDesc);
+        setText(ui.previewLabel, copy.previewLabel);
+        setText(ui.previewTitle, copy.previewTitle);
+        setText(ui.editorLabel, copy.editorLabel);
+        setText(ui.editorTitle, copy.editorTitle);
+        setText(ui.scrollDownLabel, copy.scrollDown);
+        setText(ui.addQuestion, copy.addQuestion);
+        setText(ui.submit, copy.submit);
+        setText(ui.langToggle, meta.toggle);
+        setText(ui.logoLabel, meta.logoLabel);
+        setText(ui.logoTitle, meta.logoTitle);
+        setText(ui.logoHelper, meta.logoHelper);
+        setText(ui.logoUploadText, meta.logoUpload);
+        setText(ui.logoResetButton, meta.logoReset);
+        setText(ui.qrLabel, meta.qrLabel);
+        setText(ui.qrTitle, meta.qrTitle);
+        setText(ui.qrHelper, meta.qrHelper);
+        setText(ui.qrInputLabel, meta.qrInputLabel);
+        setText(ui.qrRefresh, meta.qrRefresh);
+        setText(ui.qrNote, meta.qrNote);
+        setText(ui.builderTab, meta.tabBuilder);
+        setText(ui.statsTab, meta.tabStats);
+        setText(ui.statsLabel, meta.statsLabel);
+        setText(ui.statsTitle, meta.statsTitle);
+        setText(ui.statsHelper, meta.statsHelper);
+        setText(ui.statsEmpty, meta.statsEmpty);
+        setText(ui.resetStats, meta.resetStats);
+        renderStats();
+      };
+
+      ui.addQuestion.addEventListener("click", () => {
+        const count = questions.length + 1;
+        const newId = createId();
+        questions.push({
+          id: newId,
+          zh: {
+            text: `新问题 ${count}`,
+            options: { A: "选项 A", B: "选项 B", C: "选项 C" }
+          },
+          en: {
+            text: `New question ${count}`,
+            options: { A: "Option A", B: "Option B", C: "Option C" }
+          }
+        });
+        answerStats[newId] = createEmptyCounts();
+        persistStats();
+        renderEditor();
+        renderPreview();
+        renderStats();
+      });
+
+      ui.langToggle.addEventListener("click", () => {
+        currentLanguage = currentLanguage === "zh" ? "en" : "zh";
+        document.documentElement.lang = currentLanguage === "zh" ? "zh-CN" : "en";
+        renderCopyEditor();
+        renderEditor();
+        renderPreview();
+        updateUIText();
+      });
+
+      if (ui.builderTab) {
+        ui.builderTab.addEventListener("click", () => switchScreen("builder"));
+      }
+
+      if (ui.statsTab) {
+        ui.statsTab.addEventListener("click", () => switchScreen("stats"));
+      }
+
+      if (ui.resetStats) {
+        ui.resetStats.addEventListener("click", () => {
+          const meta = uiMeta[currentLanguage];
+          if (confirm(meta.resetStatsConfirm)) {
+            Object.keys(answerStats).forEach((key) => {
+              answerStats[key] = createEmptyCounts();
+            });
+            persistStats();
+            renderStats();
+          }
+        });
+      }
+
+      if (ui.submit) {
+        ui.submit.addEventListener("click", handleSubmit);
+      }
+
+      if (ui.qrRefresh) {
+        ui.qrRefresh.addEventListener("click", updateQrFromInput);
+      }
+
+      if (ui.qrUrlInput) {
+        ui.qrUrlInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            updateQrFromInput();
+          }
+        });
+      }
+
+      if (ui.logoInput) {
+        ui.logoInput.addEventListener("change", (event) => {
+          const file = event.target.files?.[0];
+          if (!file) return;
+          if (file.size > LOGO_MAX_BYTES) {
+            alert(currentLanguage === "zh" ? "请选择 2 MB 以下的图片文件。" : "Please choose an image smaller than 2 MB.");
+            event.target.value = "";
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result;
+            if (typeof dataUrl === "string") {
+              applyLogoSrc(dataUrl);
+              persistLogo(dataUrl);
+            }
+          };
+          reader.onerror = () => {
+            alert(currentLanguage === "zh" ? "无法读取文件，请重试。" : "Unable to read the file. Please try again.");
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      if (ui.logoResetButton) {
+        ui.logoResetButton.addEventListener("click", () => {
+          persistLogo(null);
+          applyLogoSrc(DEFAULT_LOGO_SRC);
+          if (ui.logoInput) {
+            ui.logoInput.value = "";
+          }
+        });
+      }
+
+      if (ui.scrollRange) {
+        ui.scrollRange.addEventListener("input", (event) => {
+          const maxScroll = editorList.scrollHeight - editorList.clientHeight;
+          if (maxScroll <= 0) return;
+          const ratio = Number(event.target.value) / 100;
+          editorList.scrollTop = ratio * maxScroll;
+        });
+      }
+
+      editorList.addEventListener("scroll", syncScrollHandle);
+      window.addEventListener("resize", syncScrollHandle);
+
+      initQrSection();
+      renderPreview();
+      renderEditor();
+      renderCopyEditor();
+      renderStats();
+      updateUIText();
+      loadStoredLogo();
+    </script>
+  </body>
+</html>
