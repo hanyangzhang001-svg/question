@@ -120,17 +120,20 @@
         text-align: center;
       }
 
-      .admin-link {
-        position: absolute;
-        top: 18px;
-        right: 18px;
-        width: 140px;
-        height: 32px;
-        opacity: 0;
-        border-radius: 20px;
+      .admin-button {
+        border: 1px dashed rgba(108, 122, 224, 0.5);
+        border-radius: 16px;
+        padding: 10px 16px;
         background: transparent;
-        text-indent: -9999px;
-        pointer-events: auto;
+        color: var(--accent-strong);
+        font-weight: 600;
+        cursor: pointer;
+        transition: border 0.2s ease, color 0.2s ease;
+      }
+
+      .admin-button:hover {
+        border-color: var(--accent-strong);
+        color: var(--accent-strong);
       }
 
       .page-tabs {
@@ -775,16 +778,10 @@
             </p>
           </div>
         </div>
-        <button id="lang-toggle" class="toggle" type="button">切换到 English</button>
-        <a
-          href="https://hanyangzhang001-svg.github.io/HANYANG/"
-          class="admin-link"
-          aria-label="管理员入口"
-          target="_blank"
-          rel="noopener"
-        >
-          管理员入口
-        </a>
+        <div style="display: flex; gap: 12px; align-items: center">
+          <button id="lang-toggle" class="toggle" type="button">切换到 English</button>
+          <button id="admin-button" class="admin-button" type="button">管理员入口</button>
+        </div>
       </header>
 
       <section class="qr-card">
@@ -877,15 +874,6 @@
         <p id="stats-empty" class="stats-empty" hidden>还没有任何提交记录。</p>
       </section>
 
-      <section class="sr-only" aria-label="管理员编辑入口">
-        <h2>高级编辑入口</h2>
-        <p>
-          若你是有权限的维护者，可通过下方链接跳转到内部子项目完成扩展编辑。普通用户不会看到该区域。
-        </p>
-        <a href="https://hanyangzhang001-svg.github.io/HANYANG/" target="_blank" rel="noopener">
-          打开子项目编辑台
-        </a>
-      </section>
     </div>
 
     <script>
@@ -896,6 +884,9 @@
           questionTitle: (index) => `问题 ${index}`,
           questionPlaceholder: "请输入问题内容",
           optionPlaceholder: (letter) => `${letter} 选项内容`,
+          adminButton: "管理员入口",
+          adminPrompt: "请输入管理员密码",
+          adminError: "密码错误，请重试",
           tabBuilder: "问卷设计",
           tabStats: "回答统计",
           statsLabel: "回答统计",
@@ -940,6 +931,9 @@
           questionTitle: (index) => `Question ${index}`,
           questionPlaceholder: "Enter your question",
           optionPlaceholder: (letter) => `Option ${letter}`,
+          adminButton: "Admin console",
+          adminPrompt: "Enter admin password",
+          adminError: "Incorrect password. Try again.",
           tabBuilder: "Survey builder",
           tabStats: "Response stats",
           statsLabel: "Response stats",
@@ -1074,6 +1068,8 @@
       const STATS_STORAGE_KEY = "survey-builder-answer-stats";
       const QR_URL_STORAGE_KEY = "survey-builder-qr-url";
       const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
+      const ADMIN_TARGET_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
+      const ADMIN_PASSWORD = "123456";
 
       const createEmptyCounts = () => ({ A: 0, B: 0, C: 0 });
 
@@ -1158,7 +1154,8 @@
         qrRefresh: document.getElementById("qr-refresh"),
         qrNote: document.getElementById("qr-note"),
         qrUrlInput: document.getElementById("qr-url"),
-        qrCode: document.getElementById("qr-code")
+        qrCode: document.getElementById("qr-code"),
+        adminButton: document.getElementById("admin-button")
       };
 
       const questionList = document.getElementById("question-list");
@@ -1586,6 +1583,7 @@
         setText(ui.qrInputLabel, meta.qrInputLabel);
         setText(ui.qrRefresh, meta.qrRefresh);
         setText(ui.qrNote, meta.qrNote);
+        setText(ui.adminButton, meta.adminButton);
         setText(ui.builderTab, meta.tabBuilder);
         setText(ui.statsTab, meta.tabStats);
         setText(ui.statsLabel, meta.statsLabel);
@@ -1649,6 +1647,19 @@
 
       if (ui.submit) {
         ui.submit.addEventListener("click", handleSubmit);
+      }
+
+      if (ui.adminButton) {
+        ui.adminButton.addEventListener("click", () => {
+          const meta = uiMeta[currentLanguage];
+          const input = window.prompt(meta.adminPrompt);
+          if (input === null) return;
+          if (input.trim() === ADMIN_PASSWORD) {
+            window.open(ADMIN_TARGET_URL, "_blank", "noopener");
+          } else {
+            alert(meta.adminError);
+          }
+        });
       }
 
       if (ui.qrRefresh) {
