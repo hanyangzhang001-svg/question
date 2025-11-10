@@ -235,6 +235,10 @@
         gap: 24px;
       }
 
+      .admin-mode .layout {
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      }
+
       .panel {
         background: var(--surface);
         border-radius: 28px;
@@ -445,6 +449,10 @@
       .editor-panel {
         gap: 20px;
         display: none;
+      }
+
+      .admin-mode .editor-panel {
+        display: flex;
       }
 
       .logo-uploader {
@@ -825,7 +833,7 @@
           <button id="submit-btn" class="submit" type="button">提交反馈</button>
         </div>
 
-        <div class="panel editor-panel" hidden aria-hidden="true">
+        <div class="panel editor-panel" aria-hidden="true">
           <div class="panel-header">
             <div>
               <p class="eyebrow" id="editor-label">编辑区</p>
@@ -1067,9 +1075,9 @@
       const LOGO_MAX_BYTES = 2 * 1024 * 1024;
       const STATS_STORAGE_KEY = "survey-builder-answer-stats";
       const QR_URL_STORAGE_KEY = "survey-builder-qr-url";
-      const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
-      const ADMIN_TARGET_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
+      const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/question/";
       const ADMIN_PASSWORD = "123456";
+      const ADMIN_MODE_KEY = "survey-builder-admin-mode";
 
       const createEmptyCounts = () => ({ A: 0, B: 0, C: 0 });
 
@@ -1116,6 +1124,7 @@
       let contentText = JSON.parse(JSON.stringify(defaultContent));
       answerStats = loadStats();
       let currentQrUrl = "";
+      let adminEnabled = false;
 
       const ui = {
         logoImage: document.querySelector(".hero-logo"),
@@ -1147,6 +1156,7 @@
         statsContent: document.getElementById("stats-content"),
         statsEmpty: document.getElementById("stats-empty"),
         resetStats: document.getElementById("reset-stats"),
+        editorPanel: document.querySelector(".editor-panel"),
         qrLabel: document.getElementById("qr-label"),
         qrTitle: document.getElementById("qr-title"),
         qrHelper: document.getElementById("qr-helper"),
@@ -1222,6 +1232,17 @@
         }
         persistQrUrl(url);
         renderQrCode(url);
+      };
+
+      const enableAdminMode = () => {
+        if (adminEnabled) return;
+        adminEnabled = true;
+        document.body.classList.add("admin-mode");
+        if (ui.editorPanel) {
+          ui.editorPanel.hidden = false;
+          ui.editorPanel.setAttribute("aria-hidden", "false");
+        }
+        sessionStorage.setItem(ADMIN_MODE_KEY, "true");
       };
 
       const setText = (el, value) => {
@@ -1652,10 +1673,14 @@
       if (ui.adminButton) {
         ui.adminButton.addEventListener("click", () => {
           const meta = uiMeta[currentLanguage];
+          if (adminEnabled) {
+            alert(currentLanguage === "zh" ? "已处于管理员模式。" : "Admin mode already active.");
+            return;
+          }
           const input = window.prompt(meta.adminPrompt);
           if (input === null) return;
           if (input.trim() === ADMIN_PASSWORD) {
-            window.open(ADMIN_TARGET_URL, "_blank", "noopener");
+            enableAdminMode();
           } else {
             alert(meta.adminError);
           }
@@ -1722,6 +1747,10 @@
       window.addEventListener("resize", syncScrollHandle);
 
       initQrSection();
+      if (sessionStorage.getItem(ADMIN_MODE_KEY) === "true") {
+        enableAdminMode();
+      }
+
       renderPreview();
       renderEditor();
       renderCopyEditor();
