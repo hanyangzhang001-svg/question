@@ -215,7 +215,7 @@
 
       .layout {
         display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        grid-template-columns: minmax(0, 1fr);
         gap: 24px;
       }
 
@@ -428,6 +428,7 @@
 
       .editor-panel {
         gap: 20px;
+        display: none;
       }
 
       .logo-uploader {
@@ -616,6 +617,17 @@
         background: rgba(247, 249, 255, 0.8);
       }
 
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
       .editor-divider {
         height: 1px;
         width: 100%;
@@ -794,7 +806,7 @@
           <button id="submit-btn" class="submit" type="button">提交反馈</button>
         </div>
 
-        <div class="panel editor-panel">
+        <div class="panel editor-panel" hidden aria-hidden="true">
           <div class="panel-header">
             <div>
               <p class="eyebrow" id="editor-label">编辑区</p>
@@ -841,6 +853,16 @@
         <p class="stats-helper" id="stats-helper">实时查看每个问题的 A/B/C 选择次数，洞察回答趋势。</p>
         <div id="stats-content" class="stats-list"></div>
         <p id="stats-empty" class="stats-empty" hidden>还没有任何提交记录。</p>
+      </section>
+
+      <section class="sr-only" aria-label="管理员编辑入口">
+        <h2>高级编辑入口</h2>
+        <p>
+          若你是有权限的维护者，可通过下方链接跳转到内部子项目完成扩展编辑。普通用户不会看到该区域。
+        </p>
+        <a href="https://hanyangzhang001-svg.github.io/HANYANG/" target="_blank" rel="noopener">
+          打开子项目编辑台
+        </a>
       </section>
     </div>
 
@@ -1029,6 +1051,7 @@
       const LOGO_MAX_BYTES = 2 * 1024 * 1024;
       const STATS_STORAGE_KEY = "survey-builder-answer-stats";
       const QR_URL_STORAGE_KEY = "survey-builder-qr-url";
+      const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
 
       const createEmptyCounts = () => ({ A: 0, B: 0, C: 0 });
 
@@ -1162,7 +1185,8 @@
       const initQrSection = () => {
         if (!ui.qrUrlInput) return;
         const stored = loadStoredQrUrl();
-        const initialUrl = stored && isValidUrl(stored) ? stored : window.location.href;
+        const initialUrl =
+          stored && isValidUrl(stored) ? stored : DEFAULT_QR_URL || window.location.href;
         ui.qrUrlInput.value = initialUrl;
         persistQrUrl(initialUrl);
         renderQrCode(initialUrl);
