@@ -789,6 +789,7 @@
         <div style="display: flex; gap: 12px; align-items: center">
           <button id="lang-toggle" class="toggle" type="button">切换到 English</button>
           <button id="admin-button" class="admin-button" type="button">管理员入口</button>
+          <button id="exit-admin-button" class="admin-button" type="button" hidden>退出管理员模式</button>
         </div>
       </header>
 
@@ -893,6 +894,7 @@
           questionPlaceholder: "请输入问题内容",
           optionPlaceholder: (letter) => `${letter} 选项内容`,
           adminButton: "管理员入口",
+          exitAdminButton: "退出管理员模式",
           adminPrompt: "请输入管理员密码",
           adminError: "密码错误，请重试",
           tabBuilder: "问卷设计",
@@ -940,6 +942,7 @@
           questionPlaceholder: "Enter your question",
           optionPlaceholder: (letter) => `Option ${letter}`,
           adminButton: "Admin console",
+          exitAdminButton: "Exit admin mode",
           adminPrompt: "Enter admin password",
           adminError: "Incorrect password. Try again.",
           tabBuilder: "Survey builder",
@@ -1165,7 +1168,8 @@
         qrNote: document.getElementById("qr-note"),
         qrUrlInput: document.getElementById("qr-url"),
         qrCode: document.getElementById("qr-code"),
-        adminButton: document.getElementById("admin-button")
+        adminButton: document.getElementById("admin-button"),
+        exitAdminButton: document.getElementById("exit-admin-button")
       };
 
       const questionList = document.getElementById("question-list");
@@ -1242,7 +1246,29 @@
           ui.editorPanel.hidden = false;
           ui.editorPanel.setAttribute("aria-hidden", "false");
         }
+        if (ui.exitAdminButton) {
+          ui.exitAdminButton.hidden = false;
+        }
         sessionStorage.setItem(ADMIN_MODE_KEY, "true");
+        const url = new URL(window.location.href);
+        url.searchParams.set("admin", "1");
+        window.history.replaceState({}, "", url.toString());
+      };
+
+      const disableAdminMode = () => {
+        adminEnabled = false;
+        document.body.classList.remove("admin-mode");
+        if (ui.editorPanel) {
+          ui.editorPanel.hidden = true;
+          ui.editorPanel.setAttribute("aria-hidden", "true");
+        }
+        if (ui.exitAdminButton) {
+          ui.exitAdminButton.hidden = true;
+        }
+        sessionStorage.removeItem(ADMIN_MODE_KEY);
+        const url = new URL(window.location.href);
+        url.searchParams.delete("admin");
+        window.history.replaceState({}, "", url.toString());
       };
 
       const setText = (el, value) => {
@@ -1605,6 +1631,7 @@
         setText(ui.qrRefresh, meta.qrRefresh);
         setText(ui.qrNote, meta.qrNote);
         setText(ui.adminButton, meta.adminButton);
+        setText(ui.exitAdminButton, meta.exitAdminButton || "");
         setText(ui.builderTab, meta.tabBuilder);
         setText(ui.statsTab, meta.tabStats);
         setText(ui.statsLabel, meta.statsLabel);
@@ -1676,12 +1703,16 @@
           const input = window.prompt(meta.adminPrompt);
           if (input === null) return;
           if (input.trim() === ADMIN_PASSWORD) {
-            const url = new URL(window.location.href);
-            url.searchParams.set("admin", "1");
-            window.location.href = url.toString();
+            enableAdminMode();
           } else {
             alert(meta.adminError);
           }
+        });
+      }
+
+      if (ui.exitAdminButton) {
+        ui.exitAdminButton.addEventListener("click", () => {
+          disableAdminMode();
         });
       }
 
@@ -1748,10 +1779,8 @@
       const searchParams = new URLSearchParams(window.location.search);
       if (searchParams.get("admin") === "1" || sessionStorage.getItem(ADMIN_MODE_KEY) === "true") {
         enableAdminMode();
-      } else if (ui.editorPanel) {
-        ui.editorPanel.hidden = true;
-        ui.editorPanel.setAttribute("aria-hidden", "true");
-        sessionStorage.removeItem(ADMIN_MODE_KEY);
+      } else {
+        disableAdminMode();
       }
 
       renderPreview();
