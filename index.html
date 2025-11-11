@@ -846,6 +846,7 @@
                 <input id="scroll-editor-range" class="scroll-range" type="range" min="0" max="100" value="0" />
               </div>
               <button id="add-question" class="ghost" type="button">新增问题</button>
+              <button id="save-editor" class="ghost" type="button">保存编辑</button>
             </div>
           </div>
           <div id="copy-editor" class="copy-editor"></div>
@@ -933,7 +934,9 @@
             scrollDown: "“下滑条”提示文案",
             addQuestion: "“新增问题”按钮",
             submit: "提交按钮"
-          }
+          },
+          saveChanges: "保存编辑",
+          saveSuccess: "已保存到浏览器，可随时继续编辑。"
         },
         en: {
           toggle: "切换到中文",
@@ -981,7 +984,9 @@
             scrollDown: "\"Scroll handle\" label",
             addQuestion: "\"Add question\" button",
             submit: "Submit button"
-          }
+          },
+          saveChanges: "Save changes",
+          saveSuccess: "Saved to your browser so you can continue later."
         }
       };
 
@@ -1081,6 +1086,8 @@
       const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/question/";
       const ADMIN_PASSWORD = "123456";
       const ADMIN_MODE_KEY = "survey-builder-admin-mode";
+      const STORAGE_QUESTIONS_KEY = "survey-builder-questions";
+      const STORAGE_CONTENT_KEY = "survey-builder-content";
 
       const createEmptyCounts = () => ({ A: 0, B: 0, C: 0 });
 
@@ -1104,6 +1111,22 @@
         }
       };
 
+      const persistQuestions = () => {
+        try {
+          localStorage.setItem(STORAGE_QUESTIONS_KEY, JSON.stringify(questions));
+        } catch (error) {
+          console.warn("Unable to store questions", error);
+        }
+      };
+
+      const persistContent = () => {
+        try {
+          localStorage.setItem(STORAGE_CONTENT_KEY, JSON.stringify(contentText));
+        } catch (error) {
+          console.warn("Unable to store content text", error);
+        }
+      };
+
       const loadStoredQrUrl = () => {
         try {
           return localStorage.getItem(QR_URL_STORAGE_KEY);
@@ -1123,8 +1146,33 @@
 
       let currentLanguage = "zh";
       let currentScreen = "builder";
-      let questions = JSON.parse(JSON.stringify(defaultQuestions));
-      let contentText = JSON.parse(JSON.stringify(defaultContent));
+      const loadSavedQuestions = () => {
+        try {
+          const stored = localStorage.getItem(STORAGE_QUESTIONS_KEY);
+          if (!stored) return null;
+          const parsed = JSON.parse(stored);
+          return Array.isArray(parsed) && parsed.length ? parsed : null;
+        } catch (error) {
+          console.warn("Unable to load saved questions", error);
+          return null;
+        }
+      };
+
+      const loadSavedContent = () => {
+        try {
+          const stored = localStorage.getItem(STORAGE_CONTENT_KEY);
+          if (!stored) return null;
+          const parsed = JSON.parse(stored);
+          if (!parsed || typeof parsed !== "object") return null;
+          return parsed;
+        } catch (error) {
+          console.warn("Unable to load saved content", error);
+          return null;
+        }
+      };
+
+      let questions = loadSavedQuestions() || JSON.parse(JSON.stringify(defaultQuestions));
+      let contentText = loadSavedContent() || JSON.parse(JSON.stringify(defaultContent));
       answerStats = loadStats();
       let currentQrUrl = "";
       let adminEnabled = false;
@@ -1169,7 +1217,8 @@
         qrUrlInput: document.getElementById("qr-url"),
         qrCode: document.getElementById("qr-code"),
         adminButton: document.getElementById("admin-button"),
-        exitAdminButton: document.getElementById("exit-admin-button")
+        exitAdminButton: document.getElementById("exit-admin-button"),
+        saveButton: document.getElementById("save-editor")
       };
 
       const questionList = document.getElementById("question-list");
@@ -1713,6 +1762,14 @@
       if (ui.exitAdminButton) {
         ui.exitAdminButton.addEventListener("click", () => {
           disableAdminMode();
+        });
+      }
+
+      if (ui.saveButton) {
+        ui.saveButton.addEventListener("click", () => {
+          persistQuestions();
+          persistContent();
+          alert(uiMeta[currentLanguage].saveSuccess);
         });
       }
 
