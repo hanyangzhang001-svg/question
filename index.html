@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>问卷设计器</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logo.svg" />
     <style>
       :root {
         color-scheme: light;
@@ -703,6 +704,66 @@
         color: var(--muted);
       }
 
+      .response-panel {
+        border: 1px solid rgba(108, 122, 224, 0.18);
+        border-radius: 22px;
+        padding: 24px;
+        background: rgba(247, 249, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .response-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .response-helper {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .response-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        max-height: 360px;
+        overflow-y: auto;
+      }
+
+      .response-entry {
+        border: 1px solid rgba(108, 122, 224, 0.18);
+        border-radius: 18px;
+        padding: 14px 16px;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .response-entry time {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .response-answer {
+        margin: 0;
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+
+      .response-empty {
+        margin: 0;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
       .option-head {
         display: flex;
         justify-content: space-between;
@@ -999,6 +1060,20 @@
         <p class="stats-helper" id="stats-helper">查看每道题的回答趋势，及时了解不同选项的受欢迎程度。</p>
         <div id="stats-content" class="stats-list"></div>
         <p id="stats-empty" class="stats-empty" hidden>还没有任何提交记录。</p>
+        <div class="response-panel">
+          <div class="response-head">
+            <div>
+              <p class="eyebrow" id="responses-label">回答记录</p>
+              <h3 id="responses-title">最新提交</h3>
+            </div>
+            <button id="response-refresh" class="ghost-small" type="button">刷新列表</button>
+          </div>
+          <p class="response-helper" id="responses-helper">
+            会从 Supabase 中拉取最近 50 条回答，用于查阅开放题内容和具体选择。
+          </p>
+          <div id="response-feed" class="response-feed"></div>
+          <p id="response-empty" class="response-empty">暂时没有回答记录。</p>
+        </div>
       </section>
 
     </div>
@@ -1076,6 +1151,13 @@
           resetStatsConfirm: "确定要清空所有统计数据吗？该操作无法撤销。",
           submitSuccess: "提交成功，感谢反馈！",
           responsesLabel: (count) => `共 ${count} 份回答`,
+          responsesPanelLabel: "回答记录",
+          responsesPanelTitle: "最新提交",
+          responsesHelper: "自动从 Supabase 获取最近 50 条回答，方便查看开放题文本与具体选择。",
+          responsesEmpty: "暂时没有回答记录。",
+          responsesRefresh: "刷新列表",
+          responsesLoading: "正在加载最新的回答记录…",
+          responsesError: "暂时无法获取回答，请稍后再试。",
           qrLabel: "扫码直达",
           qrTitle: "二维码入口",
           qrHelper: "将问卷链接分享到任何渠道，扫码即可直接打开当前页面。可自定义网址来匹配部署地址。",
@@ -1130,6 +1212,13 @@
           resetStatsConfirm: "Clear all recorded stats? This cannot be undone.",
           submitSuccess: "Thanks! Your feedback has been recorded.",
           responsesLabel: (count) => `${count} submissions`,
+          responsesPanelLabel: "Response log",
+          responsesPanelTitle: "Latest submissions",
+          responsesHelper: "Pulls the 50 most recent entries from Supabase so you can review open-text answers.",
+          responsesEmpty: "No submissions have been synced yet.",
+          responsesRefresh: "Refresh list",
+          responsesLoading: "Loading the latest submissions…",
+          responsesError: "Unable to load responses. Please try again later.",
           qrLabel: "Scan to open",
           qrTitle: "QR entry point",
           qrHelper: "Share this survey anywhere—scanning the code opens the link instantly.",
@@ -1718,6 +1807,7 @@
       const STORAGE_QUESTIONS_KEY = "survey-builder-questions";
       const STORAGE_CONTENT_KEY = "survey-builder-content";
       const REMOTE_SYNC_ENABLED = false;
+      const RESPONSE_FETCH_LIMIT = 50;
       const SUPABASE_URL = "https://tgckygkqjdihvdazqwqe.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnY2t5Z2txamRpaHZkYXpxd3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4OTc1MjksImV4cCI6MjA3ODQ3MzUyOX0.GKcnJIL3Ffyj9HljHJqeWObuFOFImnUbCY5rZ8V9BHw";
@@ -1896,6 +1986,8 @@
             item.text
         );
 
+      const findQuestionById = (id) => questions.find((question) => question.id === id);
+
       let questions = loadSavedQuestions();
       if (!isValidQuestionSet(questions)) {
         questions = JSON.parse(JSON.stringify(defaultQuestions));
@@ -1904,6 +1996,9 @@
       answerStats = loadStats();
       let currentQrUrl = "";
       let adminEnabled = false;
+      let responseFeedItems = [];
+      let responseFeedLoading = false;
+      let responseFeedError = null;
 
       const ui = {
         logoImage: document.querySelector(".hero-logo"),
@@ -1935,6 +2030,12 @@
         statsContent: document.getElementById("stats-content"),
         statsEmpty: document.getElementById("stats-empty"),
         resetStats: document.getElementById("reset-stats"),
+        responsesLabel: document.getElementById("responses-label"),
+        responsesTitle: document.getElementById("responses-title"),
+        responsesHelper: document.getElementById("responses-helper"),
+        responsesEmpty: document.getElementById("response-empty"),
+        responsesFeed: document.getElementById("response-feed"),
+        responseRefresh: document.getElementById("response-refresh"),
         editorPanel: document.querySelector(".editor-panel"),
         qrLabel: document.getElementById("qr-label"),
         qrTitle: document.getElementById("qr-title"),
@@ -2072,6 +2173,67 @@
       const applyLogoSrc = (src) => {
         if (ui.logoImage) {
           ui.logoImage.src = src || DEFAULT_LOGO_SRC;
+        }
+      };
+
+      const formatTimestamp = (value) => {
+        if (!value) return "";
+        try {
+          const date = new Date(value);
+          return new Intl.DateTimeFormat(currentLanguage === "zh" ? "zh-CN" : "en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          }).format(date);
+        } catch (error) {
+          return value;
+        }
+      };
+
+      const describeAnswer = (question, answerPayload) => {
+        if (!question) {
+          return typeof answerPayload === "string" ? answerPayload : "";
+        }
+        if (answerPayload === null || answerPayload === undefined) {
+          return "";
+        }
+        if (typeof answerPayload === "string") {
+          const option = findOptionByValue(question, answerPayload);
+          return option?.label?.[currentLanguage] || answerPayload;
+        }
+        if (Array.isArray(answerPayload)) {
+          return answerPayload
+            .map((value) => findOptionByValue(question, value)?.label?.[currentLanguage] || value)
+            .join(" / ");
+        }
+        switch (answerPayload.type) {
+          case "single": {
+            const option = findOptionByValue(question, answerPayload.selection);
+            let textValue = option?.label?.[currentLanguage] || answerPayload.selection || "";
+            if (answerPayload.otherText) {
+              textValue += currentLanguage === "zh" ? `（补充：${answerPayload.otherText}）` : ` (note: ${answerPayload.otherText})`;
+            }
+            return textValue;
+          }
+          case "multi": {
+            const selections = Array.isArray(answerPayload.selections) ? answerPayload.selections : [];
+            const pieces = selections.map((value) => {
+              const option = findOptionByValue(question, value);
+              let label = option?.label?.[currentLanguage] || value;
+              const extra = answerPayload.otherText?.[value];
+              if (extra) {
+                label += currentLanguage === "zh" ? `（补充：${extra}）` : ` (note: ${extra})`;
+              }
+              return label;
+            });
+            return pieces.join(" / ");
+          }
+          case "text":
+            return answerPayload.text || "";
+          default:
+            return JSON.stringify(answerPayload);
         }
       };
 
@@ -2416,6 +2578,93 @@
         }
       };
 
+      const renderResponseFeedList = () => {
+        if (!ui.responsesFeed || !ui.responsesEmpty) return;
+        const meta = uiMeta[currentLanguage];
+        ui.responsesFeed.innerHTML = "";
+        if (responseFeedLoading) {
+          ui.responsesEmpty.hidden = false;
+          ui.responsesEmpty.textContent = meta.responsesLoading;
+          return;
+        }
+        if (responseFeedError) {
+          ui.responsesEmpty.hidden = false;
+          ui.responsesEmpty.textContent = meta.responsesError;
+          return;
+        }
+        if (!responseFeedItems.length) {
+          ui.responsesEmpty.hidden = false;
+          ui.responsesEmpty.textContent = meta.responsesEmpty;
+          return;
+        }
+        ui.responsesEmpty.hidden = true;
+        responseFeedItems.forEach((record) => {
+          const entry = document.createElement("article");
+          entry.className = "response-entry";
+
+          const time = document.createElement("time");
+          time.dateTime = record.submitted_at;
+          time.textContent = formatTimestamp(record.submitted_at);
+          entry.appendChild(time);
+
+          const answers = record.answers && typeof record.answers === "object" ? record.answers : {};
+          Object.entries(answers).forEach(([questionId, value]) => {
+            const question = findQuestionById(questionId);
+            if (!question) return;
+            const description = describeAnswer(question, value);
+            if (!description) return;
+
+            const answerLine = document.createElement("p");
+            answerLine.className = "response-answer";
+
+            const strong = document.createElement("strong");
+            strong.textContent = question.text?.[currentLanguage] || question.text?.zh || questionId;
+            answerLine.appendChild(strong);
+            answerLine.appendChild(document.createElement("br"));
+            answerLine.appendChild(document.createTextNode(description));
+
+            entry.appendChild(answerLine);
+          });
+
+          ui.responsesFeed.appendChild(entry);
+        });
+      };
+
+      const fetchResponseFeed = async () => {
+        const params = new URLSearchParams({
+          select: "answers,submitted_at",
+          order: "submitted_at.desc",
+          limit: RESPONSE_FETCH_LIMIT
+        });
+        const requestUrl = `${SUPABASE_RESPONSES_ENDPOINT}?${params.toString()}`;
+        const response = await fetch(requestUrl, { headers: supabaseHeaders });
+        if (!response.ok) {
+          throw new Error(`Failed to load response feed: ${response.status}`);
+        }
+        return response.json();
+      };
+
+      const loadResponseFeed = async () => {
+        if (responseFeedLoading) return;
+        responseFeedLoading = true;
+        responseFeedError = null;
+        renderResponseFeedList();
+        try {
+          const records = await fetchResponseFeed();
+          responseFeedItems = Array.isArray(records)
+            ? records.map((item) => ({
+                submitted_at: item.submitted_at,
+                answers: item.answers
+              }))
+            : [];
+        } catch (error) {
+          responseFeedError = error;
+        } finally {
+          responseFeedLoading = false;
+          renderResponseFeedList();
+        }
+      };
+
       const switchScreen = (target) => {
         if (!ui.builderView || !ui.statsView) return;
         if (target === currentScreen) {
@@ -2629,7 +2878,15 @@
         setText(ui.statsHelper, meta.statsHelper);
         setText(ui.statsEmpty, meta.statsEmpty);
         setText(ui.resetStats, meta.resetStats);
+        setText(ui.responsesLabel, meta.responsesPanelLabel);
+        setText(ui.responsesTitle, meta.responsesPanelTitle);
+        setText(ui.responsesHelper, meta.responsesHelper);
+        setText(ui.responseRefresh, meta.responsesRefresh);
+        if (!responseFeedItems.length && !responseFeedLoading) {
+          setText(ui.responsesEmpty, meta.responsesEmpty);
+        }
         renderStats();
+        renderResponseFeedList();
       };
 
       if (ui.addQuestion) {
@@ -2679,6 +2936,12 @@
 
       if (ui.statsTab) {
         ui.statsTab.addEventListener("click", () => switchScreen("stats"));
+      }
+
+      if (ui.responseRefresh) {
+        ui.responseRefresh.addEventListener("click", () => {
+          loadResponseFeed();
+        });
       }
 
       if (ui.resetStats) {
