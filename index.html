@@ -127,22 +127,6 @@
         text-align: center;
       }
 
-      .admin-button {
-        border: 1px dashed rgba(108, 122, 224, 0.5);
-        border-radius: 16px;
-        padding: 10px 16px;
-        background: transparent;
-        color: var(--accent-strong);
-        font-weight: 600;
-        cursor: pointer;
-        transition: border 0.2s ease, color 0.2s ease;
-      }
-
-      .admin-button:hover {
-        border-color: var(--accent-strong);
-        color: var(--accent-strong);
-      }
-
       .page-tabs {
         display: inline-flex;
         align-items: center;
@@ -180,6 +164,13 @@
         padding: 32px 40px;
         box-shadow: 0 25px 60px rgba(31, 42, 68, 0.12);
         border: 1px solid var(--border);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
       }
 
       .hero-brand {
@@ -305,6 +296,15 @@
         min-width: 220px;
       }
 
+      .editor-controls {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
       .scroll-label {
         font-size: 0.85rem;
         color: var(--muted);
@@ -358,6 +358,58 @@
         border: 1px solid rgba(108, 122, 224, 0.15);
         background: linear-gradient(135deg, rgba(108, 122, 224, 0.04), rgba(255, 255, 255, 0.9));
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .question-section {
+        margin-bottom: 32px;
+      }
+
+      .question-section h3 {
+        margin-bottom: 12px;
+        font-size: 1.05rem;
+        color: var(--accent-strong);
+      }
+
+      .question-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .question-required {
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+      }
+
+      .question-description {
+        margin: -8px 0 8px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .survey-intro {
+        padding: 20px 24px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px dashed rgba(108, 122, 224, 0.35);
+        margin-bottom: 12px;
+      }
+
+      .survey-intro h2 {
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+      }
+
+      .survey-intro p {
+        margin: 6px 0;
+        color: var(--muted);
+        line-height: 1.6;
       }
 
       .question-title {
@@ -369,7 +421,7 @@
       .options {
         display: grid;
         gap: 12px;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       }
 
       .option {
@@ -418,6 +470,14 @@
         transform: scale(1);
       }
 
+      .option input[type="checkbox"] {
+        border-radius: 6px;
+      }
+
+      .option input[type="checkbox"]::after {
+        border-radius: 2px;
+      }
+
       .badge {
         width: 32px;
         height: 32px;
@@ -433,6 +493,15 @@
 
       .option-text {
         font-size: 0.95rem;
+      }
+
+      .option-extra {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        margin-top: 6px;
       }
 
       .submit {
@@ -612,6 +681,28 @@
         padding-top: 0;
       }
 
+      .stats-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .stats-section + .stats-section {
+        margin-top: 28px;
+      }
+
+      .stats-section h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--accent-strong);
+      }
+
+      .stats-text-note {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
       .option-head {
         display: flex;
         justify-content: space-between;
@@ -769,6 +860,11 @@
           align-items: flex-start;
         }
 
+        .hero-actions {
+          width: 100%;
+          align-items: flex-start;
+        }
+
         .panel {
           padding: 24px;
         }
@@ -793,10 +889,10 @@
             </p>
           </div>
         </div>
-        <div style="display: flex; gap: 12px; align-items: center">
+        <div class="hero-actions">
           <button id="lang-toggle" class="toggle" type="button">切换到 English</button>
-          <button id="admin-button" class="admin-button" type="button">管理员入口</button>
-          <button id="exit-admin-button" class="admin-button" type="button" hidden>退出管理员模式</button>
+          <button id="admin-button" class="ghost" type="button">管理员入口</button>
+          <button id="exit-admin-button" class="ghost" type="button" hidden>退出管理员模式</button>
         </div>
       </header>
 
@@ -837,7 +933,7 @@
             </div>
           </div>
 
-          <form id="question-list"></form>
+          <form id="question-list" novalidate></form>
           <button id="submit-btn" class="submit" type="button">提交反馈</button>
         </div>
 
@@ -848,32 +944,46 @@
               <h2 id="editor-title">实时更新问题与选项</h2>
             </div>
             <div class="panel-actions">
-              <div class="scroll-control">
-                <label id="scroll-editor-label" class="scroll-label" for="scroll-editor-range">下滑查看更多</label>
-                <input id="scroll-editor-range" class="scroll-range" type="range" min="0" max="100" value="0" />
-              </div>
-              <button id="add-question" class="ghost" type="button">新增问题</button>
-              <button id="save-editor" class="ghost" type="button">保存编辑</button>
+              <button id="save-editor" class="toggle" type="button">保存编辑</button>
             </div>
           </div>
-          <div id="copy-editor" class="copy-editor"></div>
+
           <div class="logo-uploader">
             <div class="logo-head">
               <div class="logo-copy">
                 <p class="eyebrow" id="logo-label">品牌 Logo</p>
                 <h3 id="logo-title">上传自定义图像</h3>
-                <p class="logo-helper" id="logo-helper">支持 PNG / JPG / SVG，建议透明背景。</p>
+                <p class="logo-helper" id="logo-helper">
+                  支持 PNG / JPG / SVG（≤2MB），建议透明背景。
+                </p>
               </div>
               <div class="logo-actions">
                 <label class="upload-btn">
-                  <input id="logo-input" type="file" accept="image/png,image/jpeg,image/svg+xml" hidden />
+                  <input id="logo-input" type="file" accept="image/*" hidden />
                   <span id="logo-upload-text">上传图片</span>
                 </label>
-                <button id="logo-reset" type="button" class="ghost ghost-small">恢复默认</button>
+                <button id="logo-reset" class="ghost-small" type="button">恢复默认</button>
               </div>
             </div>
           </div>
-          <div class="editor-divider" aria-hidden="true"></div>
+
+          <div id="copy-editor" class="copy-editor"></div>
+
+          <div class="editor-divider"></div>
+          <div class="editor-controls">
+            <div class="scroll-control">
+              <span class="scroll-label" id="scroll-editor-label">拖动滑条查看更多问题</span>
+              <input
+                id="scroll-editor-range"
+                class="scroll-range"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+              />
+            </div>
+            <button id="add-question" class="ghost" type="button">新增问题</button>
+          </div>
           <div id="editor-list" class="editor-list"></div>
         </div>
       </section>
@@ -886,7 +996,7 @@
           </div>
           <button id="reset-stats" class="ghost" type="button">清空统计</button>
         </div>
-        <p class="stats-helper" id="stats-helper">实时查看每个问题的 A/B/C 选择次数，洞察回答趋势。</p>
+        <p class="stats-helper" id="stats-helper">查看每道题的回答趋势，及时了解不同选项的受欢迎程度。</p>
         <div id="stats-content" class="stats-list"></div>
         <p id="stats-empty" class="stats-empty" hidden>还没有任何提交记录。</p>
       </section>
@@ -894,13 +1004,64 @@
     </div>
 
     <script>
+      const surveyIntro = {
+        zh: {
+          title: "🐾 宠物玩具消费与可持续态度调查问卷（Z世代宠物主人）",
+          description: [
+            "你好！感谢你参与本研究。本问卷旨在了解Z世代宠物主人的宠物玩具消费习惯、使用情况与对可持续设计的态度。",
+            "所有数据仅用于学术研究，匿名收集，不会公开个人信息。填写大约需要5分钟。"
+          ]
+        },
+        en: {
+          title: "🐾 Pet Toy Consumption & Sustainability Survey (Gen Z Pet Parents)",
+          description: [
+            "Hello! Thanks for taking the time. This survey explores how Gen Z pet parents shop for toys, use them, and think about sustainable design.",
+            "All responses are anonymous, used for academic research only, and take about five minutes to complete."
+          ]
+        }
+      };
+
+      const questionSections = [
+        {
+          id: "basic",
+          zh: { title: "一、基本信息", summary: "了解您的基本情况，方便分析不同人群的回答。" },
+          en: { title: "I. Basic Information", summary: "Tell us a bit about yourself so we can compare different groups." }
+        },
+        {
+          id: "purchase",
+          zh: { title: "二、宠物玩具购买行为与动机", summary: "记录你的购买频率、预算与主要动机。" },
+          en: { title: "II. Buying Behaviors & Motivation", summary: "Capture how often you buy toys, your budget, and what drives each purchase." }
+        },
+        {
+          id: "usage",
+          zh: { title: "三、宠物玩具的使用与闲置情况", summary: "了解玩具数量、使用率以及闲置去向。" },
+          en: { title: "III. Usage & Idle Toys", summary: "Understand how many toys your pet owns, what gets played, and how unused items are handled." }
+        },
+        {
+          id: "sustainability",
+          zh: { title: "四、对可持续／环保宠物用品的认知与态度", summary: "探索你对环保理念的认知与接受度。" },
+          en: { title: "IV. Sustainability Awareness", summary: "Explore awareness of eco-friendly toys and how important sustainability feels to you." }
+        },
+        {
+          id: "reuse",
+          zh: { title: "五、对旧玩具再利用／回收／捐赠的态度", summary: "关注回收、翻新和再设计服务的接受度。" },
+          en: { title: "V. Reuse, Recycling & Donation", summary: "Gauge interest in recycling programs and redesigned products." }
+        },
+        {
+          id: "open",
+          zh: { title: "六、开放问题", summary: "欢迎你自由分享更深入的看法。" },
+          en: { title: "VI. Open Questions", summary: "Share any additional thoughts in your own words." }
+        }
+      ];
+
       const uiMeta = {
         zh: {
           toggle: "切换到 English",
           remove: "删除",
           questionTitle: (index) => `问题 ${index}`,
-          questionPlaceholder: "请输入问题内容",
-          optionPlaceholder: (letter) => `${letter} 选项内容`,
+          questionPlaceholder: "请输入题目内容",
+          notePlaceholder: "（可选）补充说明",
+          optionPlaceholder: (index) => `选项 ${index}`,
           adminButton: "管理员入口",
           exitAdminButton: "退出管理员模式",
           adminPrompt: "请输入管理员密码",
@@ -909,12 +1070,12 @@
           tabStats: "回答统计",
           statsLabel: "回答统计",
           statsTitle: "整体回答概览",
-          statsHelper: "实时查看每个问题的 A/B/C 选择次数，洞察回答趋势。",
+          statsHelper: "查看每个选项被选择的次数，追踪不同题目的回答趋势。",
           statsEmpty: "还没有任何提交记录。",
           resetStats: "清空统计",
           resetStatsConfirm: "确定要清空所有统计数据吗？该操作无法撤销。",
           submitSuccess: "提交成功，感谢反馈！",
-          responsesLabel: (count) => `累计 ${count} 次回答`,
+          responsesLabel: (count) => `共 ${count} 份回答`,
           qrLabel: "扫码直达",
           qrTitle: "二维码入口",
           qrHelper: "将问卷链接分享到任何渠道，扫码即可直接打开当前页面。可自定义网址来匹配部署地址。",
@@ -943,37 +1104,41 @@
             submit: "提交按钮"
           },
           saveChanges: "保存编辑",
-          saveSuccess: "已保存到浏览器，可随时继续编辑。"
+          saveSuccess: "已保存到云端，可在其他设备继续编辑。",
+          requiredError: "请完成所有必答题。",
+          textQuestionNote: (count) =>
+            count ? `已收集 ${count} 条开放回答，请在后台查看详情。` : "等待第一条开放回答。"
         },
         en: {
-          toggle: "切换到中文",
+          toggle: "Switch to 中文",
           remove: "Remove",
           questionTitle: (index) => `Question ${index}`,
-          questionPlaceholder: "Enter your question",
-          optionPlaceholder: (letter) => `Option ${letter}`,
+          questionPlaceholder: "Enter the prompt",
+          notePlaceholder: "Optional helper text",
+          optionPlaceholder: (index) => `Option ${index}`,
           adminButton: "Admin console",
           exitAdminButton: "Exit admin mode",
-          adminPrompt: "Enter admin password",
+          adminPrompt: "Enter the admin password",
           adminError: "Incorrect password. Try again.",
           tabBuilder: "Survey builder",
           tabStats: "Response stats",
           statsLabel: "Response stats",
-          statsTitle: "Overall answer overview",
-          statsHelper: "Track how often each option is selected to understand trends in real time.",
+          statsTitle: "Overall response overview",
+          statsHelper: "Track how often each option is chosen to understand response trends.",
           statsEmpty: "No submissions yet.",
           resetStats: "Clear stats",
           resetStatsConfirm: "Clear all recorded stats? This cannot be undone.",
           submitSuccess: "Thanks! Your feedback has been recorded.",
-          responsesLabel: (count) => `${count} total responses`,
+          responsesLabel: (count) => `${count} submissions`,
           qrLabel: "Scan to open",
           qrTitle: "QR entry point",
-          qrHelper: "Share this survey anywhere—scanning the code opens the link instantly. Customize the URL to match your deployment.",
+          qrHelper: "Share this survey anywhere—scanning the code opens the link instantly.",
           qrInputLabel: "Destination URL",
           qrRefresh: "Update QR code",
           qrNote: "Scan on mobile to open the survey",
           qrInvalid: "Please enter a valid http(s) link.",
           logoLabel: "Brand Logo",
-          logoTitle: "Upload your own mark",
+          logoTitle: "Upload your mark",
           logoHelper: "PNG / JPG / SVG up to 2 MB. Transparent background recommended.",
           logoUpload: "Upload image",
           logoReset: "Reset to default",
@@ -993,7 +1158,12 @@
             submit: "Submit button"
           },
           saveChanges: "Save changes",
-          saveSuccess: "Saved to your browser so you can continue later."
+          saveSuccess: "Saved remotely so you can continue anywhere.",
+          requiredError: "Please answer every required question.",
+          textQuestionNote: (count) =>
+            count
+              ? `${count} open responses collected. Check the admin data for details.`
+              : "Waiting for the first open response."
         }
       };
 
@@ -1017,41 +1187,492 @@
 
       const defaultQuestions = [
         {
-          id: "default-q1",
-          zh: {
-            text: "当你第一次打开页面时，整体视觉是否符合“现代简约”的预期？",
-            options: {
-              A: "完全符合，视觉语言非常统一",
-              B: "大体符合，但仍可更精简",
-              C: "不符合，需要重新审视设计"
-            }
+          id: "basic-age",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您的年龄范围：",
+            en: "Your age range:"
           },
-          en: {
-            text: "When you first land on the page, does the visual identity feel modern and minimal?",
-            options: {
-              A: "Absolutely—cohesive and contemporary",
-              B: "Mostly—could be simplified a bit more",
-              C: "Not really—we need a new direction"
+          options: [
+            { value: "18-23", label: { zh: "18–23岁", en: "18–23 years" } },
+            { value: "23-30", label: { zh: "23–30岁", en: "23–30 years" } },
+            { value: "30-36", label: { zh: "30–36岁", en: "30–36 years" } },
+            { value: "36-44", label: { zh: "36–44岁", en: "36–44 years" } }
+          ]
+        },
+        {
+          id: "basic-gender",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您的性别：",
+            en: "Your gender:"
+          },
+          options: [
+            { value: "male", label: { zh: "男", en: "Male" } },
+            { value: "female", label: { zh: "女", en: "Female" } },
+            { value: "gender-other", label: { zh: "其他／不愿透露", en: "Other / Prefer not to say" } }
+          ]
+        },
+        {
+          id: "basic-occupation",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您目前的职业或身份：",
+            en: "Your current occupation or role:"
+          },
+          options: [
+            { value: "student", label: { zh: "学生", en: "Student" } },
+            { value: "office-worker", label: { zh: "上班族", en: "Office worker" } },
+            { value: "freelancer", label: { zh: "自由职业者", en: "Freelancer" } },
+            {
+              value: "occupation-other",
+              label: { zh: "其他（请注明）", en: "Other (please specify)" },
+              hasTextInput: true,
+              placeholder: { zh: "请注明职业", en: "Describe your role" }
             }
+          ]
+        },
+        {
+          id: "basic-pet-type",
+          sectionId: "basic",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "您的宠物类型：（可多选）",
+            en: "Your pet type(s) (select all that apply):"
+          },
+          options: [
+            { value: "dog", label: { zh: "狗", en: "Dog" } },
+            { value: "cat", label: { zh: "猫", en: "Cat" } },
+            {
+              value: "pet-other",
+              label: { zh: "其他（请注明）", en: "Other (please specify)" },
+              hasTextInput: true,
+              placeholder: { zh: "请输入宠物类型", en: "Share the species" }
+            }
+          ]
+        },
+        {
+          id: "basic-children",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您是否有子女？",
+            en: "Do you have children?"
+          },
+          options: [
+            { value: "yes", label: { zh: "有", en: "Yes" } },
+            { value: "no", label: { zh: "没有", en: "No" } }
+          ]
+        },
+        {
+          id: "basic-pet-status",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您的宠物在您心中的地位是？",
+            en: "What status does your pet hold in your life?"
+          },
+          options: [
+            { value: "family", label: { zh: "家人／孩子", en: "Family / child" } },
+            { value: "friend", label: { zh: "朋友／伴侣", en: "Friend / partner" } },
+            { value: "roommate", label: { zh: "室友／生活伙伴", en: "Roommate / living companion" } },
+            { value: "companion", label: { zh: "陪伴者，但不拟人化", en: "Companion without personification" } },
+            {
+              value: "pet-status-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请描述", en: "Describe the role" }
+            }
+          ]
+        },
+        {
+          id: "basic-role",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: {
+            zh: "在家中，您通常如何称呼自己对宠物的角色？",
+            en: "At home, how do you describe your role to your pet?"
+          },
+          options: [
+            { value: "parent", label: { zh: "妈妈／爸爸", en: "Mom / Dad" } },
+            { value: "sibling", label: { zh: "姐姐／哥哥", en: "Older sister / brother" } },
+            { value: "owner", label: { zh: "主人", en: "Owner" } },
+            { value: "friend-role", label: { zh: "朋友", en: "Friend" } },
+            {
+              value: "role-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请补充", en: "Share your nickname" }
+            }
+          ]
+        },
+        {
+          id: "purchase-frequency",
+          sectionId: "purchase",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您平均多久会为宠物购买一次玩具？",
+            en: "How often do you buy toys for your pet on average?"
+          },
+          options: [
+            { value: "monthly", label: { zh: "每月1次以上", en: "More than once per month" } },
+            { value: "quarterly", label: { zh: "每2–3个月一次", en: "Every 2–3 months" } },
+            { value: "half-year", label: { zh: "每半年一次", en: "About every six months" } },
+            { value: "yearly", label: { zh: "每年一次或更少", en: "Once a year or less" } }
+          ]
+        },
+        {
+          id: "purchase-spend-rmb",
+          sectionId: "purchase",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您平均每年在宠物玩具上的花费大约为（人民币）：",
+            en: "Roughly how much do you spend on pet toys per year (RMB)?"
+          },
+          options: [
+            { value: "lt100", label: { zh: "少于100元", en: "Less than ¥100" } },
+            { value: "100-300", label: { zh: "100–300元", en: "¥100–¥300" } },
+            { value: "300-600", label: { zh: "300–600元", en: "¥300–¥600" } },
+            { value: "600-1000", label: { zh: "600–1000元", en: "¥600–¥1,000" } },
+            { value: "gt1000", label: { zh: "超过1000元", en: "More than ¥1,000" } }
+          ]
+        },
+        {
+          id: "purchase-spend-usd",
+          sectionId: "purchase",
+          type: "single",
+          required: true,
+          text: {
+            zh: "9.1 您平均每年在宠物玩具上的花费大约为（美元）：",
+            en: "9.1 Approximate annual spending on pet toys (USD):"
+          },
+          options: [
+            { value: "lt20", label: { zh: "少于20美元", en: "Less than $20" } },
+            { value: "20-50", label: { zh: "20–50美元", en: "$20–$50" } },
+            { value: "50-100", label: { zh: "50–100美元", en: "$50–$100" } },
+            { value: "100-200", label: { zh: "100–200美元", en: "$100–$200" } },
+            { value: "gt200", label: { zh: "超过200美元", en: "More than $200" } }
+          ]
+        },
+        {
+          id: "purchase-motivation",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "您购买宠物玩具的主要动机是什么？（可多选）",
+            en: "What motivates you to buy pet toys? (Select all that apply)"
+          },
+          options: [
+            { value: "replace", label: { zh: "宠物破坏旧玩具，需要更换", en: "Replacing broken toys" } },
+            { value: "fun", label: { zh: "想让宠物开心／解闷", en: "To keep my pet happy or entertained" } },
+            { value: "influenced", label: { zh: "被社交媒体或网红种草", en: "Inspired by social media or influencers" } },
+            { value: "festival", label: { zh: "节日或纪念日礼物", en: "Holiday or special gift" } },
+            { value: "self-love", label: { zh: "自己觉得玩具可爱／好看", en: "I find the toy cute or aesthetic" } },
+            {
+              value: "motivation-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请补充原因", en: "Share another motivation" }
+            }
+          ]
+        },
+        {
+          id: "purchase-channels",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "您通常通过哪些渠道购买宠物玩具？（可多选）",
+            en: "Which channels do you usually buy pet toys from? (Select all that apply)"
+          },
+          options: [
+            {
+              value: "ecommerce",
+              label: { zh: "电商平台（如淘宝、京东、亚马逊）", en: "E-commerce platforms (Taobao, JD, Amazon)" }
+            },
+            { value: "offline", label: { zh: "线下宠物店", en: "Brick-and-mortar pet stores" } },
+            {
+              value: "social",
+              label: { zh: "社交平台（如小红书、抖音）", en: "Social platforms (Xiaohongshu, TikTok, etc.)" }
+            },
+            { value: "brand-site", label: { zh: "品牌官网", en: "Brand official website" } },
+            {
+              value: "channel-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请输入渠道", en: "Share another channel" }
+            }
+          ]
+        },
+        {
+          id: "purchase-concerns",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "在购买前，哪些因素会影响您购买宠物玩具的欲望？（可多选）",
+            en: "Before purchasing, which factors reduce your desire to buy pet toys? (Select all that apply)"
+          },
+          options: [
+            { value: "price", label: { zh: "价格太高", en: "Price is too high" } },
+            { value: "short-use", label: { zh: "觉得宠物玩不了多久", en: "Pet may lose interest quickly" } },
+            { value: "quality", label: { zh: "觉得玩具质量差／容易坏", en: "Concerns about poor quality" } },
+            { value: "materials", label: { zh: "担心材料不安全／有异味", en: "Worried about unsafe materials or odors" } },
+            { value: "too-many", label: { zh: "已经买太多了／家里有类似玩具", en: "Already own similar toys" } },
+            { value: "storage", label: { zh: "缺乏收纳空间", en: "Lack of storage space" } },
+            { value: "brand-trust", label: { zh: "对品牌或广告不信任", en: "Don't trust the brand or ads" } },
+            {
+              value: "concern-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请输入原因", en: "Share another reason" }
+            }
+          ]
+        },
+        {
+          id: "purchase-control",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "您通常会在什么情况下控制自己的购买欲？（可多选）",
+            en: "When do you hold back from buying new toys? (Select all that apply)"
+          },
+          options: [
+            { value: "overspent", label: { zh: "觉得最近已经花太多钱了", en: "Recently spent too much" } },
+            { value: "budget", label: { zh: "月预算已超支", en: "Monthly budget is exceeded" } },
+            { value: "not-needed", label: { zh: "觉得宠物并不真正需要新玩具", en: "Pet doesn't really need another toy" } },
+            { value: "reminded", label: { zh: "被朋友／家人提醒理性消费", en: "Friends/family urge me to be rational" } },
+            { value: "reviews", label: { zh: "看了玩具实物或评论后觉得不值", en: "Reviews or in-person check feel underwhelming" } },
+            { value: "sustainability", label: { zh: "环保或可持续意识让自己犹豫", en: "Environmental awareness makes me hesitate" } },
+            {
+              value: "control-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请输入原因", en: "Share another trigger" }
+            }
+          ]
+        },
+        {
+          id: "usage-toy-count",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您的宠物平均有多少个玩具？",
+            en: "Roughly how many toys does your pet own?"
+          },
+          options: [
+            { value: "1-3", label: { zh: "1–3个", en: "1–3" } },
+            { value: "4-6", label: { zh: "4–6个", en: "4–6" } },
+            { value: "7-10", label: { zh: "7–10个", en: "7–10" } },
+            { value: "10+", label: { zh: "10个以上", en: "More than 10" } }
+          ]
+        },
+        {
+          id: "usage-favorite-share",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您认为宠物经常玩的玩具有多少比例？",
+            en: "Roughly what portion of the toys are played with regularly?"
+          },
+          options: [
+            { value: "80plus", label: { zh: "超过80%", en: "Over 80%" } },
+            { value: "half", label: { zh: "大约一半", en: "About half" } },
+            { value: "less-half", label: { zh: "不到一半", en: "Less than half" } },
+            { value: "few-favorites", label: { zh: "只有一两个最喜欢的", en: "Only one or two favorites" } }
+          ]
+        },
+        {
+          id: "usage-idle-handling",
+          sectionId: "usage",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "闲置或损坏的玩具通常怎么处理？（可多选）",
+            en: "How do you handle idle or damaged toys? (Select all that apply)"
+          },
+          options: [
+            { value: "discard", label: { zh: "丢弃", en: "Throw them away" } },
+            { value: "store", label: { zh: "收起来不用", en: "Store them away" } },
+            { value: "repurpose", label: { zh: "改造成其他玩具", en: "Upcycle into something else" } },
+            { value: "clean", label: { zh: "清洗后再用", en: "Clean and reuse" } },
+            { value: "donate", label: { zh: "捐赠／送朋友", en: "Donate or give to friends" } },
+            {
+              value: "idle-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请输入做法", en: "Share another approach" }
+            }
+          ]
+        },
+        {
+          id: "usage-diy",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您是否愿意自己DIY宠物玩具？",
+            en: "Are you willing to DIY pet toys?"
+          },
+          options: [
+            { value: "love-it", label: { zh: "非常愿意，我喜欢自己动手", en: "Very willing—I love crafting" } },
+            { value: "need-guide", label: { zh: "愿意，但需要有教程或指导", en: "Willing, with tutorials or guidance" } },
+            { value: "not-sure", label: { zh: "不太愿意，怕不安全或宠物不喜欢", en: "Not really—concerned about safety or interest" } },
+            { value: "no", label: { zh: "完全不愿意", en: "Not willing at all" } }
+          ]
+        },
+        {
+          id: "sustainability-awareness",
+          sectionId: "sustainability",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您是否听说过“可持续宠物用品”或“环保宠物玩具”？",
+            en: "Have you heard of “sustainable” or “eco-friendly” pet toys?"
+          },
+          options: [
+            { value: "aware", label: { zh: "听说过并了解", en: "Yes, and I understand it" } },
+            { value: "heard", label: { zh: "听说过但不了解", en: "Heard of it but not sure what it means" } },
+            { value: "never", label: { zh: "从未听说过", en: "Never heard of it" } }
+          ]
+        },
+        {
+          id: "sustainability-importance",
+          sectionId: "sustainability",
+          type: "single",
+          required: true,
+          text: {
+            zh: "您认为选择环保材料或可循环的宠物玩具重要吗？",
+            en: "How important is it to choose toys made with eco-friendly or recyclable materials?"
+          },
+          options: [
+            { value: "very", label: { zh: "非常重要", en: "Very important" } },
+            { value: "quite", label: { zh: "比较重要", en: "Quite important" } },
+            { value: "neutral", label: { zh: "一般", en: "Neutral" } },
+            { value: "less", label: { zh: "不太重要", en: "Not very important" } },
+            { value: "not", label: { zh: "完全不重要", en: "Not important at all" } }
+          ]
+        },
+        {
+          id: "sustainability-premium",
+          sectionId: "sustainability",
+          type: "single",
+          required: true,
+          text: {
+            zh: "如果环保宠物玩具的价格比普通玩具贵20%，您会愿意购买吗？",
+            en: "If an eco-friendly toy costs 20% more, would you still buy it?"
+          },
+          options: [
+            { value: "yes", label: { zh: "会", en: "Yes" } },
+            { value: "depends", label: { zh: "视情况而定", en: "Depends on the situation" } },
+            { value: "no", label: { zh: "不会", en: "No" } }
+          ]
+        },
+        {
+          id: "reuse-participation",
+          sectionId: "reuse",
+          type: "single",
+          required: true,
+          text: {
+            zh: "如果有品牌或平台提供旧玩具回收、翻新或捐赠服务，您会参与吗？",
+            en: "If a brand offered toy recycling, refurbishing, or donation services, would you join?"
+          },
+          options: [
+            { value: "definitely", label: { zh: "一定会", en: "Definitely would" } },
+            { value: "maybe", label: { zh: "可能会", en: "Likely would" } },
+            { value: "depends", label: { zh: "视情况而定", en: "Depends on the details" } },
+            { value: "wont", label: { zh: "不会", en: "Probably not" } }
+          ]
+        },
+        {
+          id: "reuse-factors",
+          sectionId: "reuse",
+          type: "multi",
+          required: true,
+          text: {
+            zh: "您认为影响您是否参与旧玩具再利用的主要因素是？（可多选）",
+            en: "What factors influence whether you would join a reuse program? (Select all that apply)"
+          },
+          options: [
+            { value: "convenience", label: { zh: "是否方便（回收点是否易达）", en: "Convenience / drop-off access" } },
+            { value: "hygiene", label: { zh: "卫生与安全问题", en: "Hygiene and safety" } },
+            { value: "quantity", label: { zh: "家中闲置玩具的数量", en: "How many idle toys I have" } },
+            { value: "price", label: { zh: "收费价格", en: "Service fee" } },
+            { value: "trust", label: { zh: "是否信任回收机构", en: "Trust in the organizer" } },
+            { value: "reward", label: { zh: "是否能获得奖励或优惠", en: "Rewards or incentives" } },
+            { value: "responsibility", label: { zh: "环保意识与社会责任感", en: "Environmental / social responsibility" } },
+            {
+              value: "reuse-other",
+              label: { zh: "其他（请说明）", en: "Other (please describe)" },
+              hasTextInput: true,
+              placeholder: { zh: "请输入因素", en: "Share another factor" }
+            }
+          ]
+        },
+        {
+          id: "reuse-redesign",
+          sectionId: "reuse",
+          type: "single",
+          required: true,
+          text: {
+            zh: "如果旧玩具能被“重新设计”成新的产品（例如宠物配饰、装饰品等），您是否愿意购买或使用？",
+            en: "If old toys were redesigned into new products (e.g., accessories, decor), would you use them?"
+          },
+          options: [
+            { value: "very", label: { zh: "非常愿意", en: "Very willing" } },
+            { value: "interested", label: { zh: "有点兴趣", en: "Somewhat interested" } },
+            { value: "not-really", label: { zh: "不太愿意", en: "Not really" } },
+            { value: "no-interest", label: { zh: "完全没兴趣", en: "Not interested at all" } }
+          ]
+        },
+        {
+          id: "open-waste",
+          sectionId: "open",
+          type: "text",
+          required: true,
+          text: {
+            zh: "您认为目前宠物玩具最浪费或不环保的地方是什么？（开放回答）",
+            en: "In your opinion, what is the most wasteful or unsustainable aspect of pet toys? (Open response)"
+          },
+          longAnswer: true,
+          placeholder: {
+            zh: "请分享您的观察或经历",
+            en: "Share any observations or experiences"
           }
         },
         {
-          id: "default-q2",
-          zh: {
-            text: "导航结构是否帮你快速找到目标信息？",
-            options: {
-              A: "非常清晰，不需要额外提示",
-              B: "偶尔需要停顿思考",
-              C: "不够直观，很难定位内容"
-            }
+          id: "open-innovation",
+          sectionId: "open",
+          type: "text",
+          required: true,
+          text: {
+            zh: "您希望未来宠物玩具能有哪些改进或创新？",
+            en: "What improvements or innovations do you hope to see for pet toys?"
           },
-          en: {
-            text: "Does the navigation structure help you reach content quickly?",
-            options: {
-              A: "Yes—straightforward and intuitive",
-              B: "Sometimes—I pause to double check",
-              C: "Not yet—it feels hard to orient"
-            }
+          description: {
+            zh: "比如我（开放回答）比如我这个问卷你可以帮我在我的问卷里制作吗",
+            en: "Open response—for example, collaborations like this survey experience."
+          },
+          longAnswer: true,
+          placeholder: {
+            zh: "比如：我这个问卷你可以帮我在我的问卷里制作吗",
+            en: "Example: co-design sustainable toy ideas together"
           }
         }
       ];
@@ -1059,42 +1680,44 @@
       const defaultContent = {
         zh: {
           heroEyebrow: "Live Survey Builder",
-          heroTitle: "体验感问卷设计器",
+          heroTitle: "宠物玩具与可持续问卷",
           heroDesc:
-            "立即预览任何改动，使用中英文双语内容，并且自由增删问题，打造符合品牌调性的现代化问卷体验。",
+            "支持长列表题目、中英文切换、二维码分享与云端保存，帮助团队随时联合作业、实时发布更新。",
           previewLabel: "问卷预览",
           previewTitle: "受访者看到的样子",
           editorLabel: "编辑区",
           editorTitle: "实时更新问题与选项",
           scrollDown: "拖动滑条查看更多问题",
           addQuestion: "新增问题",
-          submit: "提交反馈"
+          submit: "提交问卷"
         },
         en: {
           heroEyebrow: "Live Survey Builder",
-          heroTitle: "Modern Survey Builder",
+          heroTitle: "Pet Toy Sustainability Survey",
           heroDesc:
-            "Tweak every detail live, manage bilingual content, and add or remove questions for a clean, modern survey experience.",
+            "Manage a bilingual questionnaire with live preview, QR sharing, and collaborative cloud saves for the whole team.",
           previewLabel: "Preview",
           previewTitle: "What participants will see",
           editorLabel: "Editor",
           editorTitle: "Update questions & options",
           scrollDown: "Drag to scroll questions",
           addQuestion: "Add question",
-          submit: "Submit feedback"
+          submit: "Submit survey"
         }
       };
 
+      const STATS_SCHEMA_VERSION = "v2";
       const DEFAULT_LOGO_SRC = "./assets/logo.svg";
       const LOGO_STORAGE_KEY = "survey-builder-logo";
       const LOGO_MAX_BYTES = 2 * 1024 * 1024;
       const STATS_STORAGE_KEY = "survey-builder-answer-stats";
       const QR_URL_STORAGE_KEY = "survey-builder-qr-url";
-      const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/question/";
+      const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
       const ADMIN_PASSWORD = "123456";
       const ADMIN_MODE_KEY = "survey-builder-admin-mode";
       const STORAGE_QUESTIONS_KEY = "survey-builder-questions";
       const STORAGE_CONTENT_KEY = "survey-builder-content";
+      const REMOTE_SYNC_ENABLED = false;
       const SUPABASE_URL = "https://tgckygkqjdihvdazqwqe.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnY2t5Z2txamRpaHZkYXpxd3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4OTc1MjksImV4cCI6MjA3ODQ3MzUyOX0.GKcnJIL3Ffyj9HljHJqeWObuFOFImnUbCY5rZ8V9BHw";
@@ -1102,7 +1725,15 @@
       const SUPABASE_RESPONSES_ENDPOINT = `${SUPABASE_URL}/rest/v1/survey_responses`;
       const SUPABASE_CONFIG_ID = "main";
 
-      const createEmptyCounts = () => ({ A: 0, B: 0, C: 0 });
+      const createEmptyCounts = (question) => {
+        const base = { _schema: STATS_SCHEMA_VERSION, _responses: 0 };
+        if (question?.options?.length) {
+          question.options.forEach((option) => {
+            base[option.value] = 0;
+          });
+        }
+        return base;
+      };
 
       let answerStats = {};
 
@@ -1147,6 +1778,9 @@
       };
 
       const fetchRemoteConfig = async () => {
+        if (!REMOTE_SYNC_ENABLED) {
+          return null;
+        }
         try {
           const response = await fetch(
             `${SUPABASE_CONFIG_ENDPOINT}?id=eq.${SUPABASE_CONFIG_ID}&select=config`,
@@ -1164,6 +1798,9 @@
       };
 
       const saveRemoteConfig = async (payload) => {
+        if (!REMOTE_SYNC_ENABLED) {
+          return null;
+        }
         try {
           const response = await fetch(SUPABASE_CONFIG_ENDPOINT, {
             method: "POST",
@@ -1189,7 +1826,8 @@
             headers: supabaseHeaders,
             body: JSON.stringify({
               answers,
-              submitted_at: new Date().toISOString()
+              submitted_at: new Date().toISOString(),
+              version: "v2"
             })
           });
         } catch (error) {
@@ -1241,7 +1879,27 @@
         }
       };
 
-      let questions = loadSavedQuestions() || JSON.parse(JSON.stringify(defaultQuestions));
+      const findSectionById = (sectionId) => questionSections.find((section) => section.id === sectionId);
+
+      const findOptionByValue = (question, value) =>
+        question?.options?.find((option) => option.value === value);
+
+      const isValidQuestionSet = (list) =>
+        Array.isArray(list) &&
+        list.every(
+          (item) =>
+            typeof item === "object" &&
+            item !== null &&
+            item.id &&
+            item.sectionId &&
+            item.type &&
+            item.text
+        );
+
+      let questions = loadSavedQuestions();
+      if (!isValidQuestionSet(questions)) {
+        questions = JSON.parse(JSON.stringify(defaultQuestions));
+      }
       let contentText = loadSavedContent() || JSON.parse(JSON.stringify(defaultContent));
       answerStats = loadStats();
       let currentQrUrl = "";
@@ -1296,9 +1954,24 @@
       const copyEditor = document.getElementById("copy-editor");
 
       const ensureStatsStructure = () => {
+        const validIds = new Set(questions.map((question) => question.id));
+        Object.keys(answerStats).forEach((key) => {
+          if (!validIds.has(key)) {
+            delete answerStats[key];
+          }
+        });
         questions.forEach((question) => {
-          if (!answerStats[question.id]) {
-            answerStats[question.id] = createEmptyCounts();
+          const bucket = answerStats[question.id];
+          if (!bucket || bucket._schema !== STATS_SCHEMA_VERSION) {
+            answerStats[question.id] = createEmptyCounts(question);
+            return;
+          }
+          if (question.options?.length) {
+            question.options.forEach((option) => {
+              if (typeof bucket[option.value] !== "number") {
+                bucket[option.value] = 0;
+              }
+            });
           }
         });
       };
@@ -1306,7 +1979,7 @@
       const getTotalForQuestion = (questionId) => {
         const counts = answerStats[questionId];
         if (!counts) return 0;
-        return ["A", "B", "C"].reduce((sum, option) => sum + (counts[option] || 0), 0);
+        return counts._responses || 0;
       };
 
       ensureStatsStructure();
@@ -1428,7 +2101,7 @@
       };
 
       const syncScrollHandle = () => {
-        if (!ui.scrollRange) return;
+        if (!editorList || !ui.scrollRange) return;
         const maxScroll = editorList.scrollHeight - editorList.clientHeight;
         const disabled = maxScroll <= 2;
         ui.scrollRange.disabled = disabled;
@@ -1440,66 +2113,156 @@
         ui.scrollRange.value = progress;
       };
 
+      const createQuestionElement = (question) => {
+        const block = document.createElement("article");
+        block.className = "question";
+        block.dataset.questionId = question.id;
+
+        const head = document.createElement("div");
+        head.className = "question-head";
+        const title = document.createElement("h3");
+        title.className = "question-title";
+        title.textContent = question.text?.[currentLanguage] || "";
+        head.appendChild(title);
+        if (question.required) {
+          const required = document.createElement("span");
+          required.className = "question-required";
+          required.textContent = currentLanguage === "zh" ? "必答" : "Required";
+          head.appendChild(required);
+        }
+        block.appendChild(head);
+
+        const descriptionText = question.description?.[currentLanguage];
+        if (descriptionText) {
+          const description = document.createElement("p");
+          description.className = "question-description";
+          description.textContent = descriptionText;
+          block.appendChild(description);
+        }
+
+        if (question.type === "text") {
+          const textarea = document.createElement("textarea");
+          textarea.name = question.id;
+          textarea.required = Boolean(question.required);
+          textarea.placeholder = question.placeholder?.[currentLanguage] || "";
+          textarea.rows = question.longAnswer ? 4 : 3;
+          block.appendChild(textarea);
+          return block;
+        }
+
+        const optionsWrap = document.createElement("div");
+        optionsWrap.className = "options";
+        (question.options || []).forEach((option, index) => {
+          const label = document.createElement("label");
+          label.className = "option";
+
+          const input = document.createElement("input");
+          input.type = question.type === "multi" ? "checkbox" : "radio";
+          input.name = question.id;
+          input.value = option.value;
+          if (question.type === "single" && question.required) {
+            input.required = true;
+          }
+
+          const badge = document.createElement("span");
+          badge.className = "badge";
+          badge.textContent = index + 1;
+
+          const optionText = document.createElement("span");
+          optionText.className = "option-text";
+          optionText.textContent = option.label?.[currentLanguage] || "";
+
+          label.appendChild(input);
+          label.appendChild(badge);
+          label.appendChild(optionText);
+
+          if (option.hasTextInput) {
+            const extraInput = document.createElement("input");
+            extraInput.type = "text";
+            extraInput.className = "option-extra";
+            extraInput.name = `${question.id}__${option.value}__text`;
+            extraInput.placeholder = option.placeholder?.[currentLanguage] || "";
+            extraInput.disabled = true;
+            label.appendChild(extraInput);
+            const syncExtraInput = () => {
+              const active = question.type === "multi" ? input.checked : input.checked;
+              extraInput.disabled = !active;
+              extraInput.required = active;
+              if (!active) {
+                extraInput.value = "";
+              }
+            };
+            input.addEventListener("change", syncExtraInput);
+          }
+
+          optionsWrap.appendChild(label);
+        });
+        block.appendChild(optionsWrap);
+        return block;
+      };
+
       const renderPreview = () => {
+        if (!questionList) return;
         questionList.innerHTML = "";
-        questions.forEach((question) => {
-          const block = document.createElement("section");
-          block.className = "question";
 
-          const title = document.createElement("h3");
-          title.className = "question-title";
-          title.textContent = question[currentLanguage].text || "";
-          block.appendChild(title);
-
-          const grid = document.createElement("div");
-          grid.className = "options";
-
-          ["A", "B", "C"].forEach((letter) => {
-            const label = document.createElement("label");
-            label.className = "option";
-
-            const input = document.createElement("input");
-            input.type = "radio";
-            input.name = question.id;
-            input.value = letter;
-
-            const badge = document.createElement("span");
-            badge.className = "badge";
-            badge.textContent = letter;
-
-            const optionText = document.createElement("span");
-            optionText.className = "option-text";
-            optionText.textContent = question[currentLanguage].options[letter] || "";
-
-            label.appendChild(input);
-            label.appendChild(badge);
-            label.appendChild(optionText);
-            grid.appendChild(label);
+        const intro = surveyIntro[currentLanguage];
+        if (intro) {
+          const introBlock = document.createElement("section");
+          introBlock.className = "survey-intro";
+          const introTitle = document.createElement("h2");
+          introTitle.textContent = intro.title;
+          introBlock.appendChild(introTitle);
+          intro.description?.forEach((paragraph) => {
+            const p = document.createElement("p");
+            p.textContent = paragraph;
+            introBlock.appendChild(p);
           });
+          questionList.appendChild(introBlock);
+        }
 
-          block.appendChild(grid);
-          questionList.appendChild(block);
+        questionSections.forEach((section) => {
+          const sectionQuestions = questions.filter((question) => question.sectionId === section.id);
+          if (!sectionQuestions.length) return;
+          const sectionBlock = document.createElement("div");
+          sectionBlock.className = "question-section";
+          const heading = document.createElement("h3");
+          heading.textContent = section[currentLanguage].title;
+          sectionBlock.appendChild(heading);
+          const summary = section[currentLanguage].summary;
+          if (summary) {
+            const summaryNode = document.createElement("p");
+            summaryNode.className = "question-description";
+            summaryNode.textContent = summary;
+            sectionBlock.appendChild(summaryNode);
+          }
+          sectionQuestions.forEach((question) => {
+            sectionBlock.appendChild(createQuestionElement(question));
+          });
+          questionList.appendChild(sectionBlock);
         });
       };
 
       const renderEditor = () => {
+        if (!editorList) return;
         const meta = uiMeta[currentLanguage];
         editorList.innerHTML = "";
         questions.forEach((question, index) => {
+          question.text = question.text || { zh: "", en: "" };
+          question.description = question.description || { zh: "", en: "" };
           const card = document.createElement("article");
           card.className = "editor-card";
 
           const head = document.createElement("header");
-
           const title = document.createElement("h3");
-          title.textContent = meta.questionTitle(index + 1);
+          const sectionTitle = findSectionById(question.sectionId)?.[currentLanguage]?.title || "";
+          title.textContent = `${meta.questionTitle(index + 1)} · ${sectionTitle}`;
 
           const removeButton = document.createElement("button");
           removeButton.className = "remove";
           removeButton.type = "button";
           removeButton.textContent = meta.remove;
           removeButton.addEventListener("click", () => {
-            questions = questions.filter((q) => q.id !== question.id);
+            questions = questions.filter((item) => item.id !== question.id);
             delete answerStats[question.id];
             persistStats();
             renderEditor();
@@ -1515,9 +2278,9 @@
           const questionSpan = document.createElement("span");
           questionSpan.textContent = meta.questionPlaceholder;
           const questionInput = document.createElement("textarea");
-          questionInput.value = question[currentLanguage].text || "";
+          questionInput.value = question.text[currentLanguage] || "";
           questionInput.addEventListener("input", (event) => {
-            question[currentLanguage].text = event.target.value;
+            question.text[currentLanguage] = event.target.value;
             renderPreview();
             renderStats();
           });
@@ -1525,22 +2288,40 @@
           questionLabel.appendChild(questionInput);
           card.appendChild(questionLabel);
 
-          ["A", "B", "C"].forEach((letter) => {
-            const optionLabel = document.createElement("label");
-            const labelSpan = document.createElement("span");
-            labelSpan.textContent = meta.optionPlaceholder(letter);
-            const optionInput = document.createElement("input");
-            optionInput.type = "text";
-            optionInput.value = question[currentLanguage].options[letter] || "";
-            optionInput.addEventListener("input", (event) => {
-              question[currentLanguage].options[letter] = event.target.value;
-              renderPreview();
-              renderStats();
-            });
-            optionLabel.appendChild(labelSpan);
-            optionLabel.appendChild(optionInput);
-            card.appendChild(optionLabel);
+          const noteLabel = document.createElement("label");
+          const noteSpan = document.createElement("span");
+          noteSpan.textContent = meta.notePlaceholder;
+          const noteInput = document.createElement("input");
+          noteInput.type = "text";
+          noteInput.value = question.description[currentLanguage] || "";
+          noteInput.placeholder = meta.notePlaceholder;
+          noteInput.addEventListener("input", (event) => {
+            question.description[currentLanguage] = event.target.value;
+            renderPreview();
           });
+          noteLabel.appendChild(noteSpan);
+          noteLabel.appendChild(noteInput);
+          card.appendChild(noteLabel);
+
+          if (Array.isArray(question.options)) {
+            question.options.forEach((option, optionIndex) => {
+              option.label = option.label || { zh: "", en: "" };
+              const optionLabel = document.createElement("label");
+              const labelSpan = document.createElement("span");
+              labelSpan.textContent = meta.optionPlaceholder(optionIndex + 1);
+              const optionInput = document.createElement("input");
+              optionInput.type = "text";
+              optionInput.value = option.label[currentLanguage] || "";
+              optionInput.addEventListener("input", (event) => {
+                option.label[currentLanguage] = event.target.value;
+                renderPreview();
+                renderStats();
+              });
+              optionLabel.appendChild(labelSpan);
+              optionLabel.appendChild(optionInput);
+              card.appendChild(optionLabel);
+            });
+          }
 
           editorList.appendChild(card);
         });
@@ -1555,58 +2336,76 @@
         }
         const meta = uiMeta[currentLanguage];
         ui.statsContent.innerHTML = "";
-        questions.forEach((question) => {
-          const counts = answerStats[question.id] || createEmptyCounts();
-          const total = getTotalForQuestion(question.id);
+        questionSections.forEach((section) => {
+          const sectionQuestions = questions.filter((question) => question.sectionId === section.id);
+          if (!sectionQuestions.length) return;
+          const sectionBlock = document.createElement("div");
+          sectionBlock.className = "stats-section";
+          const heading = document.createElement("h3");
+          heading.textContent = section[currentLanguage].title;
+          sectionBlock.appendChild(heading);
 
-          const card = document.createElement("article");
-          card.className = "stats-card";
+          sectionQuestions.forEach((question) => {
+            const counts = answerStats[question.id] || createEmptyCounts(question);
+            const total = counts._responses || 0;
 
-          const title = document.createElement("h3");
-          title.textContent = question[currentLanguage].text || "";
-          card.appendChild(title);
+            const card = document.createElement("article");
+            card.className = "stats-card";
 
-          const totalText = document.createElement("p");
-          totalText.className = "stats-total";
-          totalText.textContent = meta.responsesLabel(total);
-          card.appendChild(totalText);
+            const title = document.createElement("h3");
+            title.textContent = question.text?.[currentLanguage] || "";
+            card.appendChild(title);
 
-          ["A", "B", "C"].forEach((letter) => {
-            const optionWrap = document.createElement("div");
-            optionWrap.className = "stats-option";
+            const totalText = document.createElement("p");
+            totalText.className = "stats-total";
+            totalText.textContent = meta.responsesLabel(total);
+            card.appendChild(totalText);
 
-            const head = document.createElement("div");
-            head.className = "option-head";
+            if (!question.options || !question.options.length || question.type === "text") {
+              const note = document.createElement("p");
+              note.className = "stats-text-note";
+              note.textContent = meta.textQuestionNote(total);
+              card.appendChild(note);
+            } else {
+              question.options.forEach((option) => {
+                const optionWrap = document.createElement("div");
+                optionWrap.className = "stats-option";
 
-            const label = document.createElement("strong");
-            label.textContent = letter;
+                const head = document.createElement("div");
+                head.className = "option-head";
 
-            const detail = document.createElement("span");
-            const count = counts[letter] || 0;
-            const percent = total ? Math.round((count / total) * 100) : 0;
-            const optionText = question[currentLanguage].options[letter] || "";
-            detail.textContent = `${optionText} · ${count} (${percent}%)`;
+                const label = document.createElement("strong");
+                label.textContent = option.label?.[currentLanguage] || "";
 
-            head.appendChild(label);
-            head.appendChild(detail);
+                const detail = document.createElement("span");
+                const count = counts[option.value] || 0;
+                const percent = total ? Math.round((count / total) * 100) : 0;
+                detail.textContent = `${count} · ${percent}%`;
 
-            const progress = document.createElement("div");
-            progress.className = "progress";
-            const bar = document.createElement("span");
-            bar.style.width = `${percent}%`;
-            progress.appendChild(bar);
+                head.appendChild(label);
+                head.appendChild(detail);
 
-            optionWrap.appendChild(head);
-            optionWrap.appendChild(progress);
-            card.appendChild(optionWrap);
+                const progress = document.createElement("div");
+                progress.className = "progress";
+                const bar = document.createElement("span");
+                bar.style.width = `${percent}%`;
+                progress.appendChild(bar);
+
+                optionWrap.appendChild(head);
+                optionWrap.appendChild(progress);
+                card.appendChild(optionWrap);
+              });
+            }
+
+            sectionBlock.appendChild(card);
           });
 
-          ui.statsContent.appendChild(card);
+          ui.statsContent.appendChild(sectionBlock);
         });
 
         if (ui.statsEmpty) {
-          const totalSubmissions = questions.reduce(
-            (sum, q) => sum + getTotalForQuestion(q.id),
+          const totalSubmissions = Object.values(answerStats).reduce(
+            (sum, entry) => sum + (entry?._responses || 0),
             0
           );
           const hasResponses = totalSubmissions > 0;
@@ -1699,29 +2498,96 @@
 
         const meta = uiMeta[currentLanguage];
         const formData = new FormData(questionList);
-        let hasMissing = false;
-
         const submissionPayload = {};
+        let hasMissing = false;
+        let firstInvalidQuestion = null;
+
+        const markMissing = (question) => {
+          if (!hasMissing) {
+            firstInvalidQuestion = question.id;
+          }
+          hasMissing = true;
+        };
 
         questions.forEach((question) => {
-          const value = formData.get(question.id);
-          if (!value) {
-            hasMissing = true;
-            return;
+          const statsBucket = answerStats[question.id] || createEmptyCounts(question);
+          if (question.type === "single") {
+            const selectedValue = formData.get(question.id);
+            if (!selectedValue) {
+              markMissing(question);
+              return;
+            }
+            const option = findOptionByValue(question, selectedValue.toString());
+            if (!option) {
+              markMissing(question);
+              return;
+            }
+            const entry = { type: "single", selection: selectedValue.toString() };
+            if (option.hasTextInput) {
+              const extraValue = (formData.get(`${question.id}__${option.value}__text`) || "").toString().trim();
+              if (!extraValue) {
+                markMissing(question);
+                return;
+              }
+              entry.otherText = extraValue;
+            }
+            statsBucket[selectedValue] = (statsBucket[selectedValue] || 0) + 1;
+            statsBucket._responses = (statsBucket._responses || 0) + 1;
+            answerStats[question.id] = statsBucket;
+            submissionPayload[question.id] = entry;
+          } else if (question.type === "multi") {
+            const selections = formData.getAll(question.id).map((value) => value.toString());
+            if (!selections.length) {
+              markMissing(question);
+              return;
+            }
+            const entry = { type: "multi", selections };
+            const otherText = {};
+            selections.forEach((selected) => {
+              const option = findOptionByValue(question, selected);
+              if (option?.hasTextInput) {
+                const extraValue = (formData.get(`${question.id}__${option.value}__text`) || "").toString().trim();
+                if (!extraValue) {
+                  markMissing(question);
+                } else {
+                  otherText[selected] = extraValue;
+                }
+              }
+              statsBucket[selected] = (statsBucket[selected] || 0) + 1;
+            });
+            if (hasMissing) {
+              return;
+            }
+            if (Object.keys(otherText).length) {
+              entry.otherText = otherText;
+            }
+            statsBucket._responses = (statsBucket._responses || 0) + 1;
+            answerStats[question.id] = statsBucket;
+            submissionPayload[question.id] = entry;
+          } else if (question.type === "text") {
+            const textValue = (formData.get(question.id) || "").toString().trim();
+            if (!textValue) {
+              markMissing(question);
+              return;
+            }
+            statsBucket._responses = (statsBucket._responses || 0) + 1;
+            answerStats[question.id] = statsBucket;
+            submissionPayload[question.id] = { type: "text", text: textValue };
           }
-          const bucket = answerStats[question.id] || createEmptyCounts();
-          bucket[value] = (bucket[value] || 0) + 1;
-          answerStats[question.id] = bucket;
-          submissionPayload[question.id] = value;
         });
 
         if (hasMissing) {
-          questionList.reportValidity();
+          if (firstInvalidQuestion) {
+            const target = questionList.querySelector(`[data-question-id="${firstInvalidQuestion}"]`);
+            target?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          alert(meta.requiredError);
           return;
         }
 
         persistStats();
         questionList.reset();
+        renderPreview();
         renderStats();
         alert(meta.submitSuccess);
         switchScreen("stats");
@@ -1766,26 +2632,37 @@
         renderStats();
       };
 
-      ui.addQuestion.addEventListener("click", () => {
-        const count = questions.length + 1;
-        const newId = createId();
-        questions.push({
-          id: newId,
-          zh: {
-            text: `新问题 ${count}`,
-            options: { A: "选项 A", B: "选项 B", C: "选项 C" }
-          },
-          en: {
-            text: `New question ${count}`,
-            options: { A: "Option A", B: "Option B", C: "Option C" }
-          }
+      if (ui.addQuestion) {
+        ui.addQuestion.addEventListener("click", () => {
+          const count = questions.length + 1;
+          const newId = createId();
+          const newQuestion = {
+            id: newId,
+            sectionId: questionSections[0].id,
+            type: "single",
+            required: true,
+            text: {
+              zh: `新问题 ${count}`,
+              en: `New question ${count}`
+            },
+            description: {
+              zh: "",
+              en: ""
+            },
+            options: [
+              { value: "option-a", label: { zh: "选项 1", en: "Option 1" } },
+              { value: "option-b", label: { zh: "选项 2", en: "Option 2" } },
+              { value: "option-c", label: { zh: "选项 3", en: "Option 3" } }
+            ]
+          };
+          questions.push(newQuestion);
+          answerStats[newId] = createEmptyCounts(newQuestion);
+          persistStats();
+          renderEditor();
+          renderPreview();
+          renderStats();
         });
-        answerStats[newId] = createEmptyCounts();
-        persistStats();
-        renderEditor();
-        renderPreview();
-        renderStats();
-      });
+      }
 
       ui.langToggle.addEventListener("click", () => {
         currentLanguage = currentLanguage === "zh" ? "en" : "zh";
@@ -1809,7 +2686,8 @@
           const meta = uiMeta[currentLanguage];
           if (confirm(meta.resetStatsConfirm)) {
             Object.keys(answerStats).forEach((key) => {
-              answerStats[key] = createEmptyCounts();
+              const question = questions.find((item) => item.id === key);
+              answerStats[key] = createEmptyCounts(question);
             });
             persistStats();
             renderStats();
@@ -1904,7 +2782,7 @@
         });
       }
 
-      if (ui.scrollRange) {
+      if (ui.scrollRange && editorList) {
         ui.scrollRange.addEventListener("input", (event) => {
           const maxScroll = editorList.scrollHeight - editorList.clientHeight;
           if (maxScroll <= 0) return;
@@ -1913,14 +2791,16 @@
         });
       }
 
-      editorList.addEventListener("scroll", syncScrollHandle);
-      window.addEventListener("resize", syncScrollHandle);
+      if (editorList) {
+        editorList.addEventListener("scroll", syncScrollHandle);
+        window.addEventListener("resize", syncScrollHandle);
+      }
 
       const bootstrap = async () => {
         try {
           const remoteConfig = await fetchRemoteConfig();
           if (remoteConfig) {
-            if (remoteConfig.questions) {
+            if (isValidQuestionSet(remoteConfig.questions)) {
               questions = remoteConfig.questions;
               persistQuestions();
             }
