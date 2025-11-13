@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>问卷设计器</title>
+    <title>Survey Builder</title>
     <link rel="icon" type="image/svg+xml" href="./assets/logo.svg" />
     <style>
       :root {
@@ -944,9 +944,9 @@
           <img src="./assets/logo.svg" alt="After Wags logo" class="hero-logo" />
           <div class="hero-copy">
             <p class="eyebrow" id="hero-eyebrow">Live Survey Builder</p>
-            <h1 id="hero-title">体验感问卷设计器</h1>
+            <h1 id="hero-title">Pet Toy Sustainability Survey</h1>
             <p id="hero-desc">
-              立即预览任何改动，使用中英文双语内容，并且自由增删问题，打造符合品牌调性的现代化问卷体验。
+              Preview every tweak instantly, share QR links, and collaborate in two languages with a modern, minimal layout.
             </p>
           </div>
         </div>
@@ -959,71 +959,71 @@
 
       <section class="qr-card">
         <div class="qr-content">
-          <p class="eyebrow" id="qr-label">扫码直达</p>
-          <h2 id="qr-title">二维码入口</h2>
+          <p class="eyebrow" id="qr-label">Scan to open</p>
+          <h2 id="qr-title">QR entry point</h2>
           <p class="qr-helper" id="qr-helper">
-            将问卷链接分享到任何渠道，扫码即可直接打开当前页面。可自定义网址来匹配部署地址。
+            Share the survey link to any channel and let people scan to open it instantly. Customize the URL to match your deployment.
           </p>
           <div class="qr-form">
             <label>
-              <span id="qr-input-label">跳转链接</span>
+              <span id="qr-input-label">Destination URL</span>
               <input id="qr-url" type="url" placeholder="https://example.com/survey" />
             </label>
             <div class="qr-actions">
-              <button id="qr-refresh" class="ghost" type="button">更新二维码</button>
+              <button id="qr-refresh" class="ghost" type="button">Update QR code</button>
             </div>
           </div>
         </div>
         <div class="qr-preview">
           <div id="qr-code" class="qr-canvas" aria-label="二维码"></div>
-          <p class="qr-note" id="qr-note">手机扫码立即打开问卷</p>
+          <p class="qr-note" id="qr-note">Scan on mobile to open the survey</p>
         </div>
       </section>
 
       <nav class="page-tabs">
-        <button id="tab-builder" class="tab-btn active" type="button">问卷设计</button>
-        <button id="tab-stats" class="tab-btn" type="button">回答统计</button>
+        <button id="tab-builder" class="tab-btn active" type="button">Survey builder</button>
+        <button id="tab-stats" class="tab-btn" type="button">Response stats</button>
       </nav>
 
       <section id="builder-view" class="layout builder-view">
         <div class="panel preview-panel">
           <div class="panel-header">
             <div>
-              <p class="eyebrow" id="preview-label">问卷预览</p>
-              <h2 id="preview-title">受访者看到的样子</h2>
+              <p class="eyebrow" id="preview-label">Preview</p>
+              <h2 id="preview-title">What participants will see</h2>
             </div>
           </div>
 
           <form id="question-list" novalidate></form>
-          <button id="submit-btn" class="submit" type="button">提交反馈</button>
+          <button id="submit-btn" class="submit" type="button">Submit survey</button>
         </div>
 
         <div class="panel editor-panel" hidden aria-hidden="true">
           <div class="panel-header">
             <div>
-              <p class="eyebrow" id="editor-label">编辑区</p>
-              <h2 id="editor-title">实时更新问题与选项</h2>
+              <p class="eyebrow" id="editor-label">Editor</p>
+              <h2 id="editor-title">Update questions & options</h2>
             </div>
             <div class="panel-actions">
-              <button id="save-editor" class="toggle" type="button">保存编辑</button>
+              <button id="save-editor" class="toggle" type="button">Save changes</button>
             </div>
           </div>
 
           <div class="logo-uploader">
             <div class="logo-head">
               <div class="logo-copy">
-                <p class="eyebrow" id="logo-label">品牌 Logo</p>
-                <h3 id="logo-title">上传自定义图像</h3>
+                <p class="eyebrow" id="logo-label">Brand logo</p>
+                <h3 id="logo-title">Upload your own mark</h3>
                 <p class="logo-helper" id="logo-helper">
-                  支持 PNG / JPG / SVG（≤2MB），建议透明背景。
+                  Supports PNG / JPG / SVG (≤2MB). Transparent backgrounds work best.
                 </p>
               </div>
               <div class="logo-actions">
                 <label class="upload-btn">
                   <input id="logo-input" type="file" accept="image/*" hidden />
-                  <span id="logo-upload-text">上传图片</span>
+                  <span id="logo-upload-text">Upload image</span>
                 </label>
-                <button id="logo-reset" class="ghost-small" type="button">恢复默认</button>
+                <button id="logo-reset" class="ghost-small" type="button">Reset</button>
               </div>
             </div>
           </div>
@@ -1033,7 +1033,7 @@
           <div class="editor-divider"></div>
           <div class="editor-controls">
             <div class="scroll-control">
-              <span class="scroll-label" id="scroll-editor-label">拖动滑条查看更多问题</span>
+              <span class="scroll-label" id="scroll-editor-label">Drag to scroll questions</span>
               <input
                 id="scroll-editor-range"
                 class="scroll-range"
@@ -1043,7 +1043,7 @@
                 value="0"
               />
             </div>
-            <button id="add-question" class="ghost" type="button">新增问题</button>
+            <button id="add-question" class="ghost" type="button">Add question</button>
           </div>
           <div id="editor-list" class="editor-list"></div>
         </div>
@@ -1052,27 +1052,27 @@
       <section id="stats-view" class="stats-panel" hidden>
         <div class="panel-header">
           <div>
-            <p class="eyebrow" id="stats-label">回答统计</p>
-            <h2 id="stats-title">整体回答概览</h2>
+            <p class="eyebrow" id="stats-label">Response stats</p>
+            <h2 id="stats-title">Overall answer overview</h2>
           </div>
-          <button id="reset-stats" class="ghost" type="button">清空统计</button>
+          <button id="reset-stats" class="ghost" type="button">Clear stats</button>
         </div>
-        <p class="stats-helper" id="stats-helper">查看每道题的回答趋势，及时了解不同选项的受欢迎程度。</p>
+        <p class="stats-helper" id="stats-helper">Track the preference for each option and monitor trends in real time.</p>
         <div id="stats-content" class="stats-list"></div>
-        <p id="stats-empty" class="stats-empty" hidden>还没有任何提交记录。</p>
+        <p id="stats-empty" class="stats-empty" hidden>No submissions yet.</p>
         <div class="response-panel">
           <div class="response-head">
             <div>
-              <p class="eyebrow" id="responses-label">回答记录</p>
-              <h3 id="responses-title">最新提交</h3>
+              <p class="eyebrow" id="responses-label">Response log</p>
+              <h3 id="responses-title">Latest submissions</h3>
             </div>
-            <button id="response-refresh" class="ghost-small" type="button">刷新列表</button>
+            <button id="response-refresh" class="ghost-small" type="button">Refresh list</button>
           </div>
           <p class="response-helper" id="responses-helper">
-            会从 Supabase 中拉取最近 50 条回答，用于查阅开放题内容和具体选择。
+            Pulls the 50 most recent responses from Supabase so you can review open text answers and choices.
           </p>
           <div id="response-feed" class="response-feed"></div>
-          <p id="response-empty" class="response-empty">暂时没有回答记录。</p>
+          <p id="response-empty" class="response-empty">No submissions have been synced yet.</p>
         </div>
       </section>
 
@@ -1942,7 +1942,7 @@
         }
       };
 
-      let currentLanguage = "zh";
+      let currentLanguage = "en";
       let currentScreen = "builder";
       const loadSavedQuestions = () => {
         try {
