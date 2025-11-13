@@ -1,6 +1,7 @@
 # 体验感问卷设计器
 
-一个纯前端的问卷设计器，包含实时预览、编辑器、品牌 Logo 上传、二维码入口以及回答统计面板。适合部署在任何静态托管平台（GitHub Pages、Netlify、Vercel 等）。
+一个纯前端的问卷设计器，包含实时预览、编辑器、品牌 Logo 上传、二维码入口以及回答统计面板。适合部署在任何静态托管平台（GitHub Pages、Netlify、Vercel 等）。  
+线上示例：<https://hanyangzhang001-svg.github.io/HANYANG/>
 
 ## 本地预览
 
@@ -28,6 +29,11 @@ python3 -m http.server 8000
 ├── README.md
 └── .gitignore
 ```
+
+## 与 Supabase 同步编辑
+1. 在 Supabase 项目中创建 `survey_configs` 表（字段：`id text primary key default 'main'`、`config jsonb not null`、`updated_at timestamptz default now()`），并为 anon 角色开启 SELECT/INSERT/UPDATE 策略。
+2. 可选：创建 `survey_responses` 表用于记录投票（`id uuid primary key default gen_random_uuid()`、`answers jsonb not null`、`submitted_at timestamptz default now()`），并为 anon 开启 INSERT 策略。
+3. 将 `Settings → API` 中的 Project URL 与 anon key 配置到 `index.html` 内，即可在多个浏览器共享问卷配置并同步统计。
 
 ## License
 MIT
