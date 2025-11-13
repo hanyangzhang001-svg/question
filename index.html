@@ -109,8 +109,14 @@
       .qr-canvas {
         width: 180px;
         height: 180px;
-        display: block;
-        object-fit: contain;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .qr-canvas canvas {
+        width: 100% !important;
+        height: 100% !important;
       }
 
       .qr-note {
@@ -811,7 +817,7 @@
           </div>
         </div>
         <div class="qr-preview">
-          <img id="qr-code" class="qr-canvas" alt="二维码" />
+          <div id="qr-code" class="qr-canvas" aria-label="二维码"></div>
           <p class="qr-note" id="qr-note">手机扫码立即打开问卷</p>
         </div>
       </section>
@@ -886,6 +892,7 @@
 
     </div>
 
+    <script src="./assets/qrcode.min.js"></script>
     <script>
       const uiMeta = {
         zh: {
@@ -1241,6 +1248,7 @@
       answerStats = loadStats();
       let currentQrUrl = "";
       let adminEnabled = false;
+      let qrCodeInstance = null;
 
       const ui = {
         logoImage: document.querySelector(".hero-logo"),
@@ -1317,15 +1325,18 @@
       };
 
       const renderQrCode = (value) => {
-        if (!ui.qrCode) return;
-        const qrService = "https://api.qrserver.com/v1/create-qr-code/";
-        const params = new URLSearchParams({
-          size: "220x220",
-          data: value,
-          margin: "12"
-        });
-        ui.qrCode.src = `${qrService}?${params.toString()}`;
-        ui.qrCode.alt = `QR code linking to ${value}`;
+        if (!ui.qrCode || !window.QRCode) return;
+        if (!qrCodeInstance) {
+          qrCodeInstance = new QRCode(ui.qrCode, {
+            width: 180,
+            height: 180,
+            colorDark: "#111111",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }
+        qrCodeInstance.clear();
+        qrCodeInstance.makeCode(value);
         currentQrUrl = value;
       };
 
