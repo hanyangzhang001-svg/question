@@ -1866,10 +1866,11 @@
             })
           });
           if (!response.ok) throw new Error("Failed to save remote config");
-          if (response.status === 204) {
+          const raw = await response.text();
+          if (!raw) {
             return null;
           }
-          return await response.json();
+          return JSON.parse(raw);
         } catch (error) {
           console.error("Unable to save remote config", error);
           throw error;
