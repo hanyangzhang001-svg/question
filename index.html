@@ -1055,7 +1055,6 @@
             <p class="eyebrow" id="stats-label">Response stats</p>
             <h2 id="stats-title">Overall answer overview</h2>
           </div>
-          <button id="reset-stats" class="ghost" type="button">Clear stats</button>
         </div>
         <p class="stats-helper" id="stats-helper">Track the preference for each option and monitor trends in real time.</p>
         <div id="stats-content" class="stats-list"></div>
@@ -1147,8 +1146,6 @@
           statsTitle: "整体回答概览",
           statsHelper: "查看每个选项被选择的次数，追踪不同题目的回答趋势。",
           statsEmpty: "还没有任何提交记录。",
-          resetStats: "清空统计",
-          resetStatsConfirm: "确定要清空所有统计数据吗？该操作无法撤销。",
           submitSuccess: "提交成功，感谢反馈！",
           responsesLabel: (count) => `共 ${count} 份回答`,
           responsesPanelLabel: "回答记录",
@@ -1208,8 +1205,6 @@
           statsTitle: "Overall response overview",
           statsHelper: "Track how often each option is chosen to understand response trends.",
           statsEmpty: "No submissions yet.",
-          resetStats: "Clear stats",
-          resetStatsConfirm: "Clear all recorded stats? This cannot be undone.",
           submitSuccess: "Thanks! Your feedback has been recorded.",
           responsesLabel: (count) => `${count} submissions`,
           responsesPanelLabel: "Response log",
@@ -1795,11 +1790,9 @@
         }
       };
 
-      const STATS_SCHEMA_VERSION = "v2";
       const DEFAULT_LOGO_SRC = "./assets/logo.svg";
       const LOGO_STORAGE_KEY = "survey-builder-logo";
       const LOGO_MAX_BYTES = 2 * 1024 * 1024;
-      const STATS_STORAGE_KEY = "survey-builder-answer-stats";
       const QR_URL_STORAGE_KEY = "survey-builder-qr-url";
       const DEFAULT_QR_URL = "https://hanyangzhang001-svg.github.io/HANYANG/";
       const ADMIN_PASSWORD = "123456";
@@ -1808,42 +1801,13 @@
       const STORAGE_CONTENT_KEY = "survey-builder-content";
       const REMOTE_SYNC_ENABLED = true;
       const RESPONSE_FETCH_LIMIT = 50;
+      const STATS_FETCH_LIMIT = 500;
       const SUPABASE_URL = "https://tgckygkqjdihvdazqwqe.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnY2t5Z2txamRpaHZkYXpxd3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4OTc1MjksImV4cCI6MjA3ODQ3MzUyOX0.GKcnJIL3Ffyj9HljHJqeWObuFOFImnUbCY5rZ8V9BHw";
       const SUPABASE_CONFIG_ENDPOINT = `${SUPABASE_URL}/rest/v1/survey_configs`;
       const SUPABASE_RESPONSES_ENDPOINT = `${SUPABASE_URL}/rest/v1/survey_responses`;
       const SUPABASE_CONFIG_ID = "main";
-
-      const createEmptyCounts = (question) => {
-        const base = { _schema: STATS_SCHEMA_VERSION, _responses: 0 };
-        if (question?.options?.length) {
-          question.options.forEach((option) => {
-            base[option.value] = 0;
-          });
-        }
-        return base;
-      };
-
-      let answerStats = {};
-
-      const loadStats = () => {
-        try {
-          const stored = localStorage.getItem(STATS_STORAGE_KEY);
-          return stored ? JSON.parse(stored) : {};
-        } catch (error) {
-          console.warn("Unable to load stats", error);
-          return {};
-        }
-      };
-
-      const persistStats = () => {
-        try {
-          localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(answerStats));
-        } catch (error) {
-          console.warn("Unable to persist stats", error);
-        }
-      };
 
       const persistQuestions = () => {
         try {
@@ -1992,12 +1956,16 @@
         questions = JSON.parse(JSON.stringify(defaultQuestions));
       }
       let contentText = loadSavedContent() || JSON.parse(JSON.stringify(defaultContent));
-      answerStats = loadStats();
       let currentQrUrl = "";
       let adminEnabled = false;
       let responseFeedItems = [];
       let responseFeedLoading = false;
       let responseFeedError = null;
+      let statsLoading = false;
+      let statsError = null;
+      let cloudTotals = {};
+      let cloudSubmissionCount = 0;
+      let cloudLastUpdated = null;
 
       const ui = {
         logoImage: document.querySelector(".hero-logo"),
@@ -2028,7 +1996,6 @@
         statsHelper: document.getElementById("stats-helper"),
         statsContent: document.getElementById("stats-content"),
         statsEmpty: document.getElementById("stats-empty"),
-        resetStats: document.getElementById("reset-stats"),
         responsesLabel: document.getElementById("responses-label"),
         responsesTitle: document.getElementById("responses-title"),
         responsesHelper: document.getElementById("responses-helper"),
@@ -2053,34 +2020,6 @@
       const editorList = document.getElementById("editor-list");
       const copyEditor = document.getElementById("copy-editor");
 
-      const ensureStatsStructure = () => {
-        const validIds = new Set(questions.map((question) => question.id));
-        Object.keys(answerStats).forEach((key) => {
-          if (!validIds.has(key)) {
-            delete answerStats[key];
-          }
-        });
-        questions.forEach((question) => {
-          const bucket = answerStats[question.id];
-          if (!bucket || bucket._schema !== STATS_SCHEMA_VERSION) {
-            answerStats[question.id] = createEmptyCounts(question);
-            return;
-          }
-          if (question.options?.length) {
-            question.options.forEach((option) => {
-              if (typeof bucket[option.value] !== "number") {
-                bucket[option.value] = 0;
-              }
-            });
-          }
-        });
-      };
-
-      const getTotalForQuestion = (questionId) => {
-        const counts = answerStats[questionId];
-        if (!counts) return 0;
-        return counts._responses || 0;
-      };
 
       ensureStatsStructure();
 
@@ -2234,6 +2173,29 @@
           default:
             return JSON.stringify(answerPayload);
         }
+      };
+
+      const aggregateCloudTotals = (records) => {
+        const totals = {};
+        records.forEach((record) => {
+          const answers = record.answers || {};
+          Object.entries(answers).forEach(([questionId, payload]) => {
+            const question = questions.find((item) => item.id === questionId);
+            if (!question || !payload) return;
+            if (question.type === "single") {
+              totals[questionId] = totals[questionId] || {};
+              const selection = payload.selection;
+              if (!selection) return;
+              totals[questionId][selection] = (totals[questionId][selection] || 0) + 1;
+            } else if (question.type === "multi") {
+              totals[questionId] = totals[questionId] || {};
+              (payload.selections || []).forEach((selection) => {
+                totals[questionId][selection] = (totals[questionId][selection] || 0) + 1;
+              });
+            }
+          });
+        });
+        return totals;
       };
 
       const loadStoredLogo = () => {
@@ -2424,8 +2386,6 @@
           removeButton.textContent = meta.remove;
           removeButton.addEventListener("click", () => {
             questions = questions.filter((item) => item.id !== question.id);
-            delete answerStats[question.id];
-            persistStats();
             renderEditor();
             renderPreview();
             renderStats();
@@ -2491,11 +2451,40 @@
       };
 
       const renderStats = () => {
-        ensureStatsStructure();
-        if (!ui.statsContent) {
+        if (!ui.statsContent) return;
+        const meta = uiMeta[currentLanguage];
+        if (statsLoading) {
+          const loadingText = currentLanguage === "zh" ? "云端统计加载中…" : "Syncing latest data…";
+          ui.statsContent.innerHTML = `<p class="loader">${loadingText}</p>`;
+          if (ui.statsHelper) {
+            ui.statsHelper.textContent = meta.statsHelper;
+          }
+          ui.statsEmpty.hidden = true;
           return;
         }
-        const meta = uiMeta[currentLanguage];
+        if (statsError) {
+          ui.statsContent.innerHTML = `<p class="error">${statsError.message || "Unable to load cloud stats"}</p>`;
+          if (ui.statsHelper) {
+            ui.statsHelper.textContent = meta.statsHelper;
+          }
+          return;
+        }
+        if (ui.statsHelper) {
+          ui.statsHelper.textContent = cloudLastUpdated
+            ? `${meta.statsHelper} · Last synced ${formatTimestamp(cloudLastUpdated)}`
+            : meta.statsHelper;
+        }
+        if (!cloudSubmissionCount) {
+          ui.statsContent.innerHTML = "";
+          if (ui.statsEmpty) {
+            ui.statsEmpty.hidden = false;
+            ui.statsEmpty.textContent = meta.statsEmpty;
+          }
+          return;
+        }
+        if (ui.statsEmpty) {
+          ui.statsEmpty.hidden = true;
+        }
         ui.statsContent.innerHTML = "";
         questionSections.forEach((section) => {
           const sectionQuestions = questions.filter((question) => question.sectionId === section.id);
@@ -2507,8 +2496,8 @@
           sectionBlock.appendChild(heading);
 
           sectionQuestions.forEach((question) => {
-            const counts = answerStats[question.id] || createEmptyCounts(question);
-            const total = counts._responses || 0;
+            const counts = cloudTotals[question.id] || {};
+            const total = Object.values(counts).reduce((sum, value) => sum + value, 0);
 
             const card = document.createElement("article");
             card.className = "stats-card";
@@ -2563,18 +2552,6 @@
 
           ui.statsContent.appendChild(sectionBlock);
         });
-
-        if (ui.statsEmpty) {
-          const totalSubmissions = Object.values(answerStats).reduce(
-            (sum, entry) => sum + (entry?._responses || 0),
-            0
-          );
-          const hasResponses = totalSubmissions > 0;
-          ui.statsEmpty.hidden = hasResponses;
-          if (!hasResponses) {
-            ui.statsContent.innerHTML = "";
-          }
-        }
       };
 
       const renderResponseFeedList = () => {
@@ -2669,6 +2646,8 @@
         if (target === currentScreen) {
           if (target === "stats") {
             renderStats();
+            loadCloudStats();
+            loadResponseFeed();
           }
           return;
         }
@@ -2684,6 +2663,8 @@
         }
         if (!showBuilder) {
           renderStats();
+          loadCloudStats();
+          loadResponseFeed();
         }
       };
 
@@ -2739,7 +2720,6 @@
 
       const handleSubmit = async () => {
         if (!questionList) return;
-        ensureStatsStructure();
         if (!questionList.reportValidity()) {
           return;
         }
@@ -2758,7 +2738,6 @@
         };
 
         questions.forEach((question) => {
-          const statsBucket = answerStats[question.id] || createEmptyCounts(question);
           if (question.type === "single") {
             const selectedValue = formData.get(question.id);
             if (!selectedValue) {
@@ -2779,9 +2758,6 @@
               }
               entry.otherText = extraValue;
             }
-            statsBucket[selectedValue] = (statsBucket[selectedValue] || 0) + 1;
-            statsBucket._responses = (statsBucket._responses || 0) + 1;
-            answerStats[question.id] = statsBucket;
             submissionPayload[question.id] = entry;
           } else if (question.type === "multi") {
             const selections = formData.getAll(question.id).map((value) => value.toString());
@@ -2801,7 +2777,6 @@
                   otherText[selected] = extraValue;
                 }
               }
-              statsBucket[selected] = (statsBucket[selected] || 0) + 1;
             });
             if (hasMissing) {
               return;
@@ -2809,8 +2784,6 @@
             if (Object.keys(otherText).length) {
               entry.otherText = otherText;
             }
-            statsBucket._responses = (statsBucket._responses || 0) + 1;
-            answerStats[question.id] = statsBucket;
             submissionPayload[question.id] = entry;
           } else if (question.type === "text") {
             const textValue = (formData.get(question.id) || "").toString().trim();
@@ -2818,8 +2791,6 @@
               markMissing(question);
               return;
             }
-            statsBucket._responses = (statsBucket._responses || 0) + 1;
-            answerStats[question.id] = statsBucket;
             submissionPayload[question.id] = { type: "text", text: textValue };
           }
         });
@@ -2833,13 +2804,14 @@
           return;
         }
 
-        persistStats();
         questionList.reset();
         renderPreview();
-        renderStats();
         alert(meta.submitSuccess);
         switchScreen("stats");
-        saveResponseSubmission(submissionPayload);
+        saveResponseSubmission(submissionPayload).then(() => {
+          loadCloudStats();
+          loadResponseFeed();
+        });
       };
 
       const updateUIText = () => {
@@ -2876,7 +2848,6 @@
         setText(ui.statsTitle, meta.statsTitle);
         setText(ui.statsHelper, meta.statsHelper);
         setText(ui.statsEmpty, meta.statsEmpty);
-        setText(ui.resetStats, meta.resetStats);
         setText(ui.responsesLabel, meta.responsesPanelLabel);
         setText(ui.responsesTitle, meta.responsesPanelTitle);
         setText(ui.responsesHelper, meta.responsesHelper);
@@ -2886,6 +2857,35 @@
         }
         renderStats();
         renderResponseFeedList();
+      };
+
+      const loadCloudStats = async () => {
+        statsLoading = true;
+        statsError = null;
+        renderStats();
+        try {
+          const params = new URLSearchParams({
+            select: "answers,submitted_at",
+            order: "submitted_at.desc",
+            limit: STATS_FETCH_LIMIT.toString()
+          });
+          const response = await fetch(`${SUPABASE_RESPONSES_ENDPOINT}?${params.toString()}`, {
+            headers: supabaseHeaders
+          });
+          if (!response.ok) {
+            throw new Error(`Failed to load cloud stats (${response.status})`);
+          }
+          const data = await response.json();
+          const records = Array.isArray(data) ? data : [];
+          cloudTotals = aggregateCloudTotals(records);
+          cloudSubmissionCount = records.length;
+          cloudLastUpdated = records[0]?.submitted_at || null;
+        } catch (error) {
+          statsError = error;
+        } finally {
+          statsLoading = false;
+          renderStats();
+        }
       };
 
       if (ui.addQuestion) {
@@ -2912,8 +2912,6 @@
             ]
           };
           questions.push(newQuestion);
-          answerStats[newId] = createEmptyCounts(newQuestion);
-          persistStats();
           renderEditor();
           renderPreview();
           renderStats();
@@ -2940,20 +2938,6 @@
       if (ui.responseRefresh) {
         ui.responseRefresh.addEventListener("click", () => {
           loadResponseFeed();
-        });
-      }
-
-      if (ui.resetStats) {
-        ui.resetStats.addEventListener("click", () => {
-          const meta = uiMeta[currentLanguage];
-          if (confirm(meta.resetStatsConfirm)) {
-            Object.keys(answerStats).forEach((key) => {
-              const question = questions.find((item) => item.id === key);
-              answerStats[key] = createEmptyCounts(question);
-            });
-            persistStats();
-            renderStats();
-          }
         });
       }
 
@@ -3075,7 +3059,6 @@
           console.warn("Unable to load remote config, falling back to local cache");
         }
 
-        ensureStatsStructure();
         initQrSection();
 
         const searchParams = new URLSearchParams(window.location.search);
@@ -3089,6 +3072,8 @@
         renderEditor();
         renderCopyEditor();
         renderStats();
+        loadCloudStats();
+        loadResponseFeed();
         updateUIText();
         loadStoredLogo();
       };
