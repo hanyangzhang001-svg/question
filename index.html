@@ -1866,6 +1866,9 @@
             })
           });
           if (!response.ok) throw new Error("Failed to save remote config");
+          if (response.status === 204) {
+            return null;
+          }
           return await response.json();
         } catch (error) {
           console.error("Unable to save remote config", error);
@@ -1956,6 +1959,7 @@
         questions = JSON.parse(JSON.stringify(defaultQuestions));
       }
       let contentText = loadSavedContent() || JSON.parse(JSON.stringify(defaultContent));
+      let currentLogoDataUrl = null;
       let currentQrUrl = "";
       let adminEnabled = false;
       let responseFeedItems = [];
@@ -2199,12 +2203,14 @@
         try {
           const stored = localStorage.getItem(LOGO_STORAGE_KEY);
           if (stored) {
+            currentLogoDataUrl = stored;
             applyLogoSrc(stored);
             return;
           }
         } catch (error) {
           console.warn("Unable to read stored logo", error);
         }
+        currentLogoDataUrl = null;
         applyLogoSrc(DEFAULT_LOGO_SRC);
       };
 
@@ -2968,7 +2974,7 @@
           persistContent();
           ui.saveButton.disabled = true;
           try {
-            await saveRemoteConfig({ questions, contentText });
+            await saveRemoteConfig({ questions, contentText, logoDataUrl: currentLogoDataUrl });
             alert(meta.saveSuccess || "已保存");
           } catch (error) {
             alert(currentLanguage === "zh" ? "保存失败，请稍后再试。" : "Failed to save. Please try again.");
@@ -3004,6 +3010,7 @@
           reader.onload = () => {
             const dataUrl = reader.result;
             if (typeof dataUrl === "string") {
+              currentLogoDataUrl = dataUrl;
               applyLogoSrc(dataUrl);
               persistLogo(dataUrl);
             }
@@ -3018,6 +3025,7 @@
       if (ui.logoResetButton) {
         ui.logoResetButton.addEventListener("click", () => {
           persistLogo(null);
+          currentLogoDataUrl = null;
           applyLogoSrc(DEFAULT_LOGO_SRC);
           if (ui.logoInput) {
             ui.logoInput.value = "";
@@ -3040,6 +3048,7 @@
       }
 
       const bootstrap = async () => {
+        let syncedLogo = false;
         try {
           const remoteConfig = await fetchRemoteConfig();
           if (remoteConfig) {
@@ -3051,9 +3060,19 @@
               contentText = remoteConfig.contentText;
               persistContent();
             }
+            if (remoteConfig.logoDataUrl) {
+              currentLogoDataUrl = remoteConfig.logoDataUrl;
+              applyLogoSrc(currentLogoDataUrl);
+              persistLogo(currentLogoDataUrl);
+              syncedLogo = true;
+            }
           }
         } catch (error) {
           console.warn("Unable to load remote config, falling back to local cache");
+        }
+
+        if (!syncedLogo) {
+          loadStoredLogo();
         }
 
         initQrSection();
@@ -3072,7 +3091,6 @@
         loadCloudStats();
         loadResponseFeed();
         updateUIText();
-        loadStoredLogo();
       };
 
       bootstrap();
