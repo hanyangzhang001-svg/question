@@ -1916,8 +1916,7 @@
             headers: supabaseHeaders,
             body: JSON.stringify({
               answers,
-              submitted_at: new Date().toISOString(),
-              version: "v2"
+              submitted_at: new Date().toISOString()
             })
           });
         } catch (error) {
