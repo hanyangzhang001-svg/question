@@ -1275,7 +1275,7 @@
           sectionId: "basic",
           type: "single",
           required: true,
-          text: { zh: "您的年龄范围", en: "What is your age range?" },
+          text: { zh: "What is your age range?", en: "What is your age range?" },
           options: [
             { value: "18-23", label: { zh: "18–23", en: "18–23" } },
             { value: "23-30", label: { zh: "23–30", en: "23–30" } },
@@ -1288,11 +1288,11 @@
           sectionId: "basic",
           type: "single",
           required: true,
-          text: { zh: "您的性别", en: "What is your gender?" },
+          text: { zh: "What is your gender?", en: "What is your gender?" },
           options: [
-            { value: "male", label: { zh: "男", en: "Male" } },
-            { value: "female", label: { zh: "女", en: "Female" } },
-            { value: "gender-other", label: { zh: "其他／不愿透露", en: "Other / Prefer not to say" } }
+            { value: "male", label: { zh: "Male", en: "Male" } },
+            { value: "female", label: { zh: "Female", en: "Female" } },
+            { value: "gender-other", label: { zh: "Other / Prefer not to say", en: "Other / Prefer not to say" } }
           ]
         },
         {
@@ -1300,17 +1300,12 @@
           sectionId: "basic",
           type: "multi",
           required: true,
-          text: { zh: "当前职业／身份（可多选）", en: "What is your current occupation or status? (Select all that apply)" },
+          text: { zh: "What is your current occupation or status? (Select all that apply)", en: "What is your current occupation or status? (Select all that apply)" },
           options: [
-            { value: "student", label: { zh: "学生", en: "Student" } },
-            { value: "fulltime", label: { zh: "全职上班族", en: "Full-time employee" } },
-            { value: "freelancer", label: { zh: "自由职业者", en: "Freelancer" } },
-            {
-              value: "occupation-other",
-              label: { zh: "其他（请注明）", en: "Other (please specify)" },
-              hasTextInput: true,
-              placeholder: { zh: "请填写", en: "Describe" }
-            }
+            { value: "student", label: { zh: "Student", en: "Student" } },
+            { value: "fulltime", label: { zh: "Full-time employee", en: "Full-time employee" } },
+            { value: "freelancer", label: { zh: "Freelancer", en: "Freelancer" } },
+            { value: "occupation-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1318,10 +1313,10 @@
           sectionId: "basic",
           type: "multi",
           required: true,
-          text: { zh: "您的宠物类型与数量", en: "What type(s) of pets do you have, and how many?" },
+          text: { zh: "What type(s) of pets do you have, and how many?", en: "What type(s) of pets do you have, and how many?" },
           options: [
-            { value: "dog", label: { zh: "狗（数量）", en: "Dog(s):" }, hasTextInput: true, placeholder: { zh: "请输入数量", en: "Number of dogs" } },
-            { value: "cat", label: { zh: "猫（数量）", en: "Cat(s):" }, hasTextInput: true, placeholder: { zh: "请输入数量", en: "Number of cats" } }
+            { value: "dog", label: { zh: "Dog(s):", en: "Dog(s):" }, hasTextInput: true, placeholder: { zh: "Enter number", en: "Enter number" } },
+            { value: "cat", label: { zh: "Cat(s):", en: "Cat(s):" }, hasTextInput: true, placeholder: { zh: "Enter number", en: "Enter number" } }
           ]
         },
         {
@@ -1329,12 +1324,12 @@
           sectionId: "basic",
           type: "single",
           required: true,
-          text: { zh: "宠物在您生活中的地位", en: "What is the role/status of your pet(s) in your life?" },
+          text: { zh: "What is the role/status of your pet(s) in your life?", en: "What is the role/status of your pet(s) in your life?" },
           options: [
-            { value: "family", label: { zh: "家人／孩子", en: "Family member / child" } },
-            { value: "friend", label: { zh: "朋友／伴侣", en: "Friend / companion" } },
-            { value: "roommate", label: { zh: "室友／生活伙伴", en: "Roommate / living partner" } },
-            { value: "role-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请描述", en: "Describe" } }
+            { value: "family", label: { zh: "Family member / child", en: "Family member / child" } },
+            { value: "friend", label: { zh: "Friend / companion", en: "Friend / companion" } },
+            { value: "roommate", label: { zh: "Roommate / living partner", en: "Roommate / living partner" } },
+            { value: "role-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1342,13 +1337,13 @@
           sectionId: "basic",
           type: "single",
           required: true,
-          text: { zh: "在家中对自己的称呼", en: "At home, how do you usually refer to yourself in relation to your pet?" },
+          text: { zh: "At home, how do you usually refer to yourself in relation to your pet?", en: "At home, how do you usually refer to yourself in relation to your pet?" },
           options: [
-            { value: "parent", label: { zh: "妈妈／爸爸", en: "Mom / Dad" } },
-            { value: "sibling", label: { zh: "姐姐／哥哥", en: "Sister / Brother" } },
-            { value: "owner", label: { zh: "主人", en: "Owner" } },
-            { value: "friend", label: { zh: "朋友", en: "Friend" } },
-            { value: "self-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Describe" } }
+            { value: "parent", label: { zh: "Mom / Dad", en: "Mom / Dad" } },
+            { value: "sibling", label: { zh: "Sister / Brother", en: "Sister / Brother" } },
+            { value: "owner", label: { zh: "Owner", en: "Owner" } },
+            { value: "friend", label: { zh: "Friend", en: "Friend" } },
+            { value: "self-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1356,15 +1351,15 @@
           sectionId: "purchase",
           type: "single",
           required: true,
-          text: { zh: "您多久会为宠物买玩具？", en: "How often do you usually buy toys for your pet?" },
+          text: { zh: "How often do you usually buy toys for your pet?", en: "How often do you usually buy toys for your pet?" },
           options: [
-            { value: "weekly", label: { zh: "每周一次以上", en: "More than once a week" } },
-            { value: "biweekly", label: { zh: "每两周一次", en: "Once every two weeks" } },
-            { value: "monthly-1-2", label: { zh: "每月 1–2 次", en: "1–2 times per month" } },
-            { value: "two-three-months", label: { zh: "每 2–3 个月一次", en: "Once every 2–3 months" } },
-            { value: "six-month", label: { zh: "每 6 个月一次", en: "Once every 6 months" } },
-            { value: "yearly", label: { zh: "一年一次或更少", en: "Once a year or less" } },
-            { value: "irregular", label: { zh: "不定／看心情", en: "Irregular / depends on mood" } }
+            { value: "weekly", label: { zh: "More than once a week", en: "More than once a week" } },
+            { value: "biweekly", label: { zh: "Once every two weeks", en: "Once every two weeks" } },
+            { value: "monthly-1-2", label: { zh: "1–2 times per month", en: "1–2 times per month" } },
+            { value: "two-three-months", label: { zh: "Once every 2–3 months", en: "Once every 2–3 months" } },
+            { value: "six-months", label: { zh: "Once every 6 months", en: "Once every 6 months" } },
+            { value: "yearly", label: { zh: "Once a year or less", en: "Once a year or less" } },
+            { value: "irregular", label: { zh: "Irregular / depends on mood", en: "Irregular / depends on mood" } }
           ]
         },
         {
@@ -1372,13 +1367,13 @@
           sectionId: "purchase",
           type: "single",
           required: true,
-          text: { zh: "您每月在宠物玩具上的花费（美元）", en: "Approximately how much do you spend on pet toys per month (USD)?" },
+          text: { zh: "Approximately how much do you spend on pet toys per month (USD)?", en: "Approximately how much do you spend on pet toys per month (USD)?" },
           options: [
-            { value: "lt20", label: { zh: "少于 $20", en: "Less than $20" } },
+            { value: "lt20", label: { zh: "Less than $20", en: "Less than $20" } },
             { value: "20-50", label: { zh: "$20–50", en: "$20–50" } },
             { value: "50-100", label: { zh: "$50–100", en: "$50–100" } },
             { value: "100-200", label: { zh: "$100–200", en: "$100–200" } },
-            { value: "gt200", label: { zh: "$200 以上", en: "More than $200" } }
+            { value: "gt200", label: { zh: "More than $200", en: "More than $200" } }
           ]
         },
         {
@@ -1386,14 +1381,14 @@
           sectionId: "purchase",
           type: "multi",
           required: true,
-          text: { zh: "购买玩具的主要动机（可多选）", en: "What are your main motivations for purchasing pet toys? (Select all that apply)" },
+          text: { zh: "What are your main motivations for purchasing pet toys? (Select all that apply)", en: "What are your main motivations for purchasing pet toys? (Select all that apply)" },
           options: [
-            { value: "replace", label: { zh: "旧玩具损坏需替换", en: "My pet breaks old toys and needs replacements" } },
-            { value: "social", label: { zh: "社交媒体／网红种草", en: "Influenced by social media or influencers" } },
-            { value: "holiday", label: { zh: "节日／特殊礼物", en: "Holiday or special-occasion gifts" } },
-            { value: "aesthetic", label: { zh: "觉得玩具可爱／好看", en: "I find the toys cute / aesthetically pleasing" } },
-            { value: "try-new", label: { zh: "想让宠物尝试新玩具", en: "I want my pet to try something new" } },
-            { value: "motivation-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Share another motivation" } }
+            { value: "replace", label: { zh: "My pet breaks old toys and needs replacements", en: "My pet breaks old toys and needs replacements" } },
+            { value: "social", label: { zh: "Influenced by social media or influencers", en: "Influenced by social media or influencers" } },
+            { value: "holiday", label: { zh: "Holiday or special-occasion gifts", en: "Holiday or special-occasion gifts" } },
+            { value: "aesthetic", label: { zh: "I find the toys cute / aesthetically pleasing", en: "I find the toys cute / aesthetically pleasing" } },
+            { value: "try-new", label: { zh: "I want my pet to try something new", en: "I want my pet to try something new" } },
+            { value: "motivation-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1401,13 +1396,13 @@
           sectionId: "purchase",
           type: "multi",
           required: true,
-          text: { zh: "通常在哪些渠道购买？", en: "Where do you usually purchase pet toys? (Select all that apply)" },
+          text: { zh: "Where do you usually purchase pet toys? (Select all that apply)", en: "Where do you usually purchase pet toys? (Select all that apply)" },
           options: [
-            { value: "ecommerce", label: { zh: "电商平台", en: "E-commerce platforms" } },
-            { value: "offline", label: { zh: "线下宠物店", en: "Offline pet stores" } },
-            { value: "social-platform", label: { zh: "社交媒体平台", en: "Social media platforms" } },
-            { value: "brand-site", label: { zh: "品牌官网", en: "Brand websites" } },
-            { value: "channel-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请填写", en: "Describe the channel" } }
+            { value: "ecommerce", label: { zh: "E-commerce platforms (Amazon, Taobao etc.)", en: "E-commerce platforms (Amazon, Taobao etc.)" } },
+            { value: "offline", label: { zh: "Offline pet stores", en: "Offline pet stores" } },
+            { value: "social-platform", label: { zh: "Social media platforms (TikTok, Instagram, RedNote etc.)", en: "Social media platforms (TikTok, Instagram, RedNote etc.)" } },
+            { value: "brand-site", label: { zh: "Brand websites", en: "Brand websites" } },
+            { value: "channel-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1415,17 +1410,17 @@
           sectionId: "purchase",
           type: "multi",
           required: true,
-          text: { zh: "哪些因素影响您的购买意愿？", en: "What factors affect your willingness to purchase pet toys? (Select all that apply)" },
+          text: { zh: "What factors affect your willingness to purchase pet toys? (Select all that apply)", en: "What factors affect your willingness to purchase pet toys? (Select all that apply)" },
           options: [
-            { value: "price", label: { zh: "价格太高", en: "Price is too high" } },
-            { value: "aesthetic", label: { zh: "不符合审美", en: "Does not match my aesthetic" } },
-            { value: "lose-interest", label: { zh: "担心宠物很快失去兴趣", en: "I think my pet will quickly lose interest" } },
-            { value: "quality", label: { zh: "质量差／易坏", en: "Poor quality / breaks easily" } },
-            { value: "material", label: { zh: "材质安全／异味", en: "Concerns about material safety or odor" } },
-            { value: "too-many", label: { zh: "家里已经很多／类似", en: "Already purchased too many / similar toys at home" } },
-            { value: "storage", label: { zh: "缺乏收纳空间", en: "Lack of storage space" } },
-            { value: "trust", label: { zh: "品牌／广告不可信", en: "Distrust of the brand or its advertising" } },
-            { value: "factor-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Describe other factor" } }
+            { value: "price", label: { zh: "Price is too high", en: "Price is too high" } },
+            { value: "aesthetic", label: { zh: "The product does not match my personal aesthetic", en: "The product does not match my personal aesthetic" } },
+            { value: "lose-interest", label: { zh: "I think my pet will quickly lose interest", en: "I think my pet will quickly lose interest" } },
+            { value: "quality", label: { zh: "Poor quality / breaks easily", en: "Poor quality / breaks easily" } },
+            { value: "material", label: { zh: "Concerns about material safety or odor", en: "Concerns about material safety or odor" } },
+            { value: "too-many", label: { zh: "Already purchased too many / similar toys at home", en: "Already purchased too many / similar toys at home" } },
+            { value: "storage", label: { zh: "Lack of storage space", en: "Lack of storage space" } },
+            { value: "trust", label: { zh: "Distrust of the brand or its advertising", en: "Distrust of the brand or its advertising" } },
+            { value: "factor-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1433,14 +1428,14 @@
           sectionId: "purchase",
           type: "multi",
           required: true,
-          text: { zh: "什么情况下会克制购买？", en: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)" },
+          text: { zh: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)", en: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)" },
           options: [
-            { value: "spent-too-much", label: { zh: "觉得最近花太多", en: "Feeling like I’ve spent too much recently" } },
-            { value: "not-needed", label: { zh: "宠物并不真正需要", en: "My pet does not truly need a new toy" } },
-            { value: "reminded", label: { zh: "被家人／朋友提醒", en: "Reminded by friends/family to spend rationally" } },
-            { value: "reviews", label: { zh: "评价／实物不值", en: "Product reviews or inspections make it seem not worth it" } },
-            { value: "sustainability", label: { zh: "环保／可持续考虑", en: "Environmental or sustainability concerns" } },
-            { value: "restraint-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Describe other situation" } }
+            { value: "spent-too-much", label: { zh: "Feeling like I’ve spent too much recently", en: "Feeling like I’ve spent too much recently" } },
+            { value: "not-needed", label: { zh: "My pet does not truly need a new toy", en: "My pet does not truly need a new toy" } },
+            { value: "reminded", label: { zh: "Reminded by friends/family to spend rationally", en: "Reminded by friends/family to spend rationally" } },
+            { value: "reviews", label: { zh: "Product reviews or inspections make it seem not worth it", en: "Product reviews or inspections make it seem not worth it" } },
+            { value: "sustainability", label: { zh: "Environmental or sustainability concerns", en: "Environmental or sustainability concerns" } },
+            { value: "restraint-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1448,15 +1443,15 @@
           sectionId: "usage",
           type: "single",
           required: true,
-          text: { zh: "宠物多久会对玩具失去兴趣？", en: "On average, how long does it take for your pet to lose interest in a toy?" },
+          text: { zh: "On average, how long does it take for your pet to lose interest in a toy?", en: "On average, how long does it take for your pet to lose interest in a toy?" },
           options: [
-            { value: "hours", label: { zh: "几小时内", en: "Within a few hours" } },
-            { value: "days-1-3", label: { zh: "1–3 天内", en: "Within 1–3 days" } },
-            { value: "week", label: { zh: "约 1 周", en: "About 1 week" } },
-            { value: "month", label: { zh: "约 1 个月", en: "About 1 month" } },
-            { value: "three-months", label: { zh: "3 个月后仍感兴趣", en: "Still interested after 3 months" } },
-            { value: "depends", label: { zh: "视玩具类型而定", en: "Depends on the type of toy" } },
-            { value: "unsure", label: { zh: "不确定／未留意", en: "Not sure / haven’t noticed" } }
+            { value: "hours", label: { zh: "Within a few hours", en: "Within a few hours" } },
+            { value: "days-1-3", label: { zh: "Within 1–3 days", en: "Within 1–3 days" } },
+            { value: "week", label: { zh: "About 1 week", en: "About 1 week" } },
+            { value: "month", label: { zh: "About 1 month", en: "About 1 month" } },
+            { value: "three-months", label: { zh: "Still interested after 3 months", en: "Still interested after 3 months" } },
+            { value: "depends", label: { zh: "Depends on the type of toy", en: "Depends on the type of toy" } },
+            { value: "unsure", label: { zh: "Not sure / haven’t noticed", en: "Not sure / haven’t noticed" } }
           ]
         },
         {
@@ -1464,15 +1459,15 @@
           sectionId: "usage",
           type: "single",
           required: true,
-          text: { zh: "玩具多久会损坏？", en: "On average, how long does it take for your pet’s toys to become damaged?" },
+          text: { zh: "On average, how long does it take for your pet’s toys to become damaged?", en: "On average, how long does it take for your pet’s toys to become damaged?" },
           options: [
-            { value: "damage-hours", label: { zh: "几小时内", en: "Within a few hours" } },
-            { value: "damage-days", label: { zh: "1–3 天内", en: "Within 1–3 days" } },
-            { value: "damage-week", label: { zh: "约 1 周", en: "About 1 week" } },
-            { value: "damage-month", label: { zh: "约 1 个月", en: "About 1 month" } },
-            { value: "damage-3months", label: { zh: "3 个月后仍可用", en: "Still usable after 3 months" } },
-            { value: "damage-depends", label: { zh: "视玩具类型而定", en: "Depends on the type of toy" } },
-            { value: "damage-unsure", label: { zh: "不确定／未留意", en: "Not sure / haven’t noticed" } }
+            { value: "damage-hours", label: { zh: "Within a few hours", en: "Within a few hours" } },
+            { value: "damage-days", label: { zh: "Within 1–3 days", en: "Within 1–3 days" } },
+            { value: "damage-week", label: { zh: "About 1 week", en: "About 1 week" } },
+            { value: "damage-month", label: { zh: "About 1 month", en: "About 1 month" } },
+            { value: "damage-3months", label: { zh: "Still usable after 3 months", en: "Still usable after 3 months" } },
+            { value: "damage-depends", label: { zh: "Depends on the type of toy", en: "Depends on the type of toy" } },
+            { value: "damage-unsure", label: { zh: "Not sure / haven’t noticed", en: "Not sure / haven’t noticed" } }
           ]
         },
         {
@@ -1480,12 +1475,12 @@
           sectionId: "usage",
           type: "single",
           required: true,
-          text: { zh: "宠物目前有多少个玩具？", en: "How many toys does your pet currently have?" },
+          text: { zh: "How many toys does your pet currently have?", en: "How many toys does your pet currently have?" },
           options: [
             { value: "1-3", label: { zh: "1–3", en: "1–3" } },
             { value: "4-6", label: { zh: "4–6", en: "4–6" } },
             { value: "7-10", label: { zh: "7–10", en: "7–10" } },
-            { value: "10+", label: { zh: "超过 10", en: "More than 10" } }
+            { value: "10+", label: { zh: "More than 10", en: "More than 10" } }
           ]
         },
         {
@@ -1493,12 +1488,12 @@
           sectionId: "usage",
           type: "single",
           required: true,
-          text: { zh: "经常玩的玩具比例", en: "What percentage of the toys does your pet frequently play with?" },
+          text: { zh: "What percentage of the toys does your pet frequently play with?", en: "What percentage of the toys does your pet frequently play with?" },
           options: [
-            { value: "80plus", label: { zh: "超过 80%", en: "Over 80%" } },
-            { value: "half", label: { zh: "大约一半", en: "About half" } },
-            { value: "less-half", label: { zh: "不到一半", en: "Less than half" } },
-            { value: "few-favorites", label: { zh: "只有一两个最喜欢的", en: "Only one or two favorites" } }
+            { value: "80plus", label: { zh: "Over 80%", en: "Over 80%" } },
+            { value: "half", label: { zh: "About half", en: "About half" } },
+            { value: "less-half", label: { zh: "Less than half", en: "Less than half" } },
+            { value: "few-favorites", label: { zh: "Only one or two favorites", en: "Only one or two favorites" } }
           ]
         },
         {
@@ -1506,14 +1501,14 @@
           sectionId: "usage",
           type: "multi",
           required: true,
-          text: { zh: "闲置玩具通常如何处理？", en: "How do you usually handle unused toys? (Select all that apply)" },
+          text: { zh: "How do you usually handle unused toys? (Select all that apply)", en: "How do you usually handle unused toys? (Select all that apply)" },
           options: [
-            { value: "discard", label: { zh: "丢弃", en: "Throw them away" } },
-            { value: "store", label: { zh: "收起来不用", en: "Store them without using" } },
-            { value: "repurpose", label: { zh: "改造成其他玩具", en: "Repurpose into other toys" } },
-            { value: "clean", label: { zh: "清洗再用", en: "Clean and reuse" } },
-            { value: "donate", label: { zh: "捐赠／转送", en: "Give away / donate" } },
-            { value: "unused-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Describe other handling" } }
+            { value: "discard", label: { zh: "Throw them away", en: "Throw them away" } },
+            { value: "store", label: { zh: "Store them without using", en: "Store them without using" } },
+            { value: "repurpose", label: { zh: "Repurpose into other toys", en: "Repurpose into other toys" } },
+            { value: "clean", label: { zh: "Clean and reuse", en: "Clean and reuse" } },
+            { value: "donate", label: { zh: "Give away / donate", en: "Give away / donate" } },
+            { value: "unused-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1521,14 +1516,14 @@
           sectionId: "usage",
           type: "multi",
           required: true,
-          text: { zh: "损坏玩具通常如何处理？", en: "How do you usually handle damaged toys? (Select all that apply)" },
+          text: { zh: "How do you usually handle damaged toys? (Select all that apply)", en: "How do you usually handle damaged toys? (Select all that apply)" },
           options: [
-            { value: "discard", label: { zh: "丢弃", en: "Throw them away" } },
-            { value: "store", label: { zh: "收起来不用", en: "Store them without using" } },
-            { value: "repurpose", label: { zh: "改造成其他玩具", en: "Repurpose into other toys" } },
-            { value: "clean", label: { zh: "清洗再用", en: "Clean and reuse" } },
-            { value: "donate", label: { zh: "赠送／捐赠", en: "Give away / donate" } },
-            { value: "damaged-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Describe other handling" } }
+            { value: "discard", label: { zh: "Throw them away", en: "Throw them away" } },
+            { value: "store", label: { zh: "Store them without using", en: "Store them without using" } },
+            { value: "repurpose", label: { zh: "Repurpose into other toys", en: "Repurpose into other toys" } },
+            { value: "clean", label: { zh: "Clean and reuse", en: "Clean and reuse" } },
+            { value: "donate", label: { zh: "Give away / donate", en: "Give away / donate" } },
+            { value: "damaged-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1536,12 +1531,12 @@
           sectionId: "usage",
           type: "single",
           required: true,
-          text: { zh: "是否愿意 DIY 玩具？", en: "Are you willing to DIY toys for your pet?" },
+          text: { zh: "Are you willing to DIY toys for your pet?", en: "Are you willing to DIY toys for your pet?" },
           options: [
-            { value: "very", label: { zh: "非常愿意，喜欢动手", en: "Very willing — I enjoy crafting" } },
-            { value: "with-guide", label: { zh: "愿意但需要教程", en: "Willing, but only with tutorials/guidance" } },
-            { value: "safety", label: { zh: "不太愿意，担心安全或不喜欢", en: "Not very willing — concerned about safety or pet disliking it" } },
-            { value: "not-enjoy", label: { zh: "不太愿意，不喜欢动手", en: "Not very willing — I don’t enjoy crafting" } }
+            { value: "very", label: { zh: "Very willing — I enjoy crafting", en: "Very willing — I enjoy crafting" } },
+            { value: "with-guide", label: { zh: "Willing, but only with tutorials/guidance", en: "Willing, but only with tutorials/guidance" } },
+            { value: "safety", label: { zh: "Not very willing — concerned about safety or pet disliking it", en: "Not very willing — concerned about safety or pet disliking it" } },
+            { value: "not-enjoy", label: { zh: "Not very willing — I don’t enjoy crafting", en: "Not very willing — I don’t enjoy crafting" } }
           ]
         },
         {
@@ -1549,18 +1544,18 @@
           sectionId: "usage",
           type: "text",
           required: false,
-          text: { zh: "关于 DIY 的补充（可选）", en: "Additional comment about DIY (optional)" }
+          text: { zh: "Additional comment", en: "Additional comment" }
         },
         {
           id: "sustain-awareness",
           sectionId: "sustainability",
           type: "single",
           required: true,
-          text: { zh: "是否听说过可持续宠物用品", en: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?" },
+          text: { zh: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?", en: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?" },
           options: [
-            { value: "aware", label: { zh: "听说并了解", en: "Yes, and I understand the concept" } },
-            { value: "heard", label: { zh: "听说但不了解", en: "Yes, but I do not understand much about it" } },
-            { value: "never", label: { zh: "从未听说", en: "No, never heard of it" } }
+            { value: "aware", label: { zh: "Yes, and I understand the concept", en: "Yes, and I understand the concept" } },
+            { value: "heard", label: { zh: "Yes, but I do not understand much about it", en: "Yes, but I do not understand much about it" } },
+            { value: "never", label: { zh: "No, never heard of it", en: "No, never heard of it" } }
           ]
         },
         {
@@ -1568,13 +1563,13 @@
           sectionId: "sustainability",
           type: "single",
           required: true,
-          text: { zh: "选择环保材质的重要性", en: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?" },
+          text: { zh: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?", en: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?" },
           options: [
-            { value: "very", label: { zh: "非常重要", en: "Very important" } },
-            { value: "somewhat", label: { zh: "比较重要", en: "Somewhat important" } },
-            { value: "neutral", label: { zh: "一般", en: "Neutral" } },
-            { value: "not-very", label: { zh: "不太重要", en: "Not very important" } },
-            { value: "not-at-all", label: { zh: "完全不重要", en: "Not important at all" } }
+            { value: "very", label: { zh: "Very important", en: "Very important" } },
+            { value: "somewhat", label: { zh: "Somewhat important", en: "Somewhat important" } },
+            { value: "neutral", label: { zh: "Neutral", en: "Neutral" } },
+            { value: "not-very", label: { zh: "Not very important", en: "Not very important" } },
+            { value: "not-at-all", label: { zh: "Not important at all", en: "Not important at all" } }
           ]
         },
         {
@@ -1582,11 +1577,11 @@
           sectionId: "sustainability",
           type: "single",
           required: true,
-          text: { zh: "如果贵 20% 是否愿意购买？", en: "If eco-friendly pet toys cost 20% more than regular ones, would you be willing to purchase them?" },
+          text: { zh: "If eco-friendly pet toys cost 20% more than regular ones, would you be willing to purchase them?", en: "If eco-friendly pet toys cost 20% more than regular ones, would you be willing to purchase them?" },
           options: [
-            { value: "yes", label: { zh: "会", en: "Yes" } },
-            { value: "depends", label: { zh: "视情况而定", en: "Depends on the situation" } },
-            { value: "no", label: { zh: "不会", en: "No" } }
+            { value: "yes", label: { zh: "Yes", en: "Yes" } },
+            { value: "depends", label: { zh: "Depends on the situation", en: "Depends on the situation" } },
+            { value: "no", label: { zh: "No", en: "No" } }
           ]
         },
         {
@@ -1594,12 +1589,12 @@
           sectionId: "reuse",
           type: "single",
           required: true,
-          text: { zh: "提供回收/翻新/捐赠服务会参与吗？", en: "If a brand or platform offered toy recycling, refurbishing, or donation services, would you participate?" },
+          text: { zh: "If a brand or platform offered toy recycling, refurbishing, or donation services, would you participate?", en: "If a brand or platform offered toy recycling, refurbishing, or donation services, would you participate?" },
           options: [
-            { value: "definitely", label: { zh: "一定会", en: "Definitely" } },
-            { value: "probably", label: { zh: "可能会", en: "Probably" } },
-            { value: "depends", label: { zh: "视情况", en: "Depends" } },
-            { value: "no", label: { zh: "不会", en: "No" } }
+            { value: "definitely", label: { zh: "Definitely", en: "Definitely" } },
+            { value: "probably", label: { zh: "Probably", en: "Probably" } },
+            { value: "depends", label: { zh: "Depends", en: "Depends" } },
+            { value: "no", label: { zh: "No", en: "No" } }
           ]
         },
         {
@@ -1607,16 +1602,16 @@
           sectionId: "reuse",
           type: "multi",
           required: true,
-          text: { zh: "哪些因素影响您参与回收？", en: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)" },
+          text: { zh: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)", en: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)" },
           options: [
-            { value: "convenience", label: { zh: "便利性", en: "Convenience (drop-off points)" } },
-            { value: "hygiene", label: { zh: "卫生与安全", en: "Hygiene and safety" } },
-            { value: "quantity", label: { zh: "家中闲置数量", en: "Number of unused toys at home" } },
-            { value: "fee", label: { zh: "服务费用", en: "Service fees" } },
-            { value: "trust", label: { zh: "对机构的信任", en: "Trust in the organization" } },
-            { value: "rewards", label: { zh: "奖励或优惠", en: "Rewards or incentives" } },
-            { value: "responsibility", label: { zh: "环保／社会责任感", en: "Environmental or social responsibility awareness" } },
-            { value: "reuse-other", label: { zh: "其他（请注明）", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "请补充", en: "Share another factor" } }
+            { value: "convenience", label: { zh: "Convenience (easily accessible drop-off points)", en: "Convenience (easily accessible drop-off points)" } },
+            { value: "hygiene", label: { zh: "Hygiene and safety concerns", en: "Hygiene and safety concerns" } },
+            { value: "quantity", label: { zh: "Number of unused toys at home", en: "Number of unused toys at home" } },
+            { value: "fee", label: { zh: "Service fees", en: "Service fees" } },
+            { value: "trust", label: { zh: "Trust in the organization", en: "Trust in the organization" } },
+            { value: "rewards", label: { zh: "Rewards or incentives", en: "Rewards or incentives" } },
+            { value: "responsibility", label: { zh: "Environmental or social responsibility awareness", en: "Environmental or social responsibility awareness" } },
+            { value: "reuse-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
           ]
         },
         {
@@ -1624,12 +1619,12 @@
           sectionId: "reuse",
           type: "single",
           required: true,
-          text: { zh: "旧玩具再设计会考虑使用吗？", en: "If old toys were redesigned, would you consider using or purchasing them?" },
+          text: { zh: "If old toys were redesigned into new products (e.g., pet accessories or decorative items), would you consider using or purchasing them?", en: "If old toys were redesigned into new products (e.g., pet accessories or decorative items), would you consider using or purchasing them?" },
           options: [
-            { value: "very", label: { zh: "非常愿意", en: "Very willing" } },
-            { value: "some", label: { zh: "有点兴趣", en: "Somewhat interested" } },
-            { value: "not-much", label: { zh: "不太愿意", en: "Not very willing" } },
-            { value: "not-at-all", label: { zh: "完全没兴趣", en: "Not interested at all" } }
+            { value: "very", label: { zh: "Very willing", en: "Very willing" } },
+            { value: "some", label: { zh: "Somewhat interested", en: "Somewhat interested" } },
+            { value: "not-much", label: { zh: "Not very willing", en: "Not very willing" } },
+            { value: "not-at-all", label: { zh: "Not interested at all", en: "Not interested at all" } }
           ]
         },
         {
@@ -1637,21 +1632,21 @@
           sectionId: "open",
           type: "text",
           required: true,
-          text: { zh: "哪些方面最浪费或不环保？", en: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?" }
+          text: { zh: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?", en: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?" }
         },
         {
           id: "open-innovation",
           sectionId: "open",
           type: "text",
           required: true,
-          text: { zh: "希望看到哪些改进或创新？", en: "What improvements or innovations would you like to see in future pet toys?" }
+          text: { zh: "What improvements or innovations would you like to see in future pet toys?", en: "What improvements or innovations would you like to see in future pet toys?" }
         },
         {
           id: "open-diy-barrier",
           sectionId: "open",
           type: "text",
           required: true,
-          text: { zh: "目前阻止您 DIY 的原因", en: "What currently discourages you the most from DIY-ing pet toys?" }
+          text: { zh: "What currently discourages you the most from DIY-ing pet toys?", en: "What currently discourages you the most from DIY-ing pet toys?" }
         }
       ];
 
