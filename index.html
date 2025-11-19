@@ -1080,53 +1080,55 @@
     <script>
       const surveyIntro = {
         zh: {
-          title: "🐾 宠物玩具消费与可持续态度调查问卷（Z世代宠物主人）",
+          title: "Play More, Buy Less: A Survey for Dog and Cat Owners",
           description: [
-            "你好！感谢你参与本研究。本问卷旨在了解Z世代宠物主人的宠物玩具消费习惯、使用情况与对可持续设计的态度。",
-            "所有数据仅用于学术研究，匿名收集，不会公开个人信息。填写大约需要5分钟。"
+            "Thank you for taking the time to visit this survey. We are a student research team from the MFA Design for Social Innovation program at the School of Visual Arts (SVA) in New York.",
+            "This anonymous survey (about 5 minutes) is for dog and cat owners who buy toys for their pets. We would like to learn how you purchase, use, and handle pet toys, your views on eco-friendly materials, and your interest in DIY pet toys. Your answers will help us understand what makes DIY difficult in real life, and how we might turn “buy then idle” toys into “make, reuse, and play longer.”",
+            "Participation is completely voluntary. You may skip any question you do not wish to answer. All responses will be used only for academic research and design purposes and will not be shared in a way that can identify you."
           ]
         },
         en: {
-          title: "🐾 Pet Toy Consumption & Sustainability Survey (Gen Z Pet Parents)",
+          title: "Play More, Buy Less: A Survey for Dog and Cat Owners",
           description: [
-            "Hello! Thanks for taking the time. This survey explores how Gen Z pet parents shop for toys, use them, and think about sustainable design.",
-            "All responses are anonymous, used for academic research only, and take about five minutes to complete."
+            "Thank you for taking the time to visit this survey. We are a student research team from the MFA Design for Social Innovation program at the School of Visual Arts (SVA) in New York.",
+            "This anonymous survey (about 5 minutes) is for dog and cat owners who buy toys for their pets. We would like to learn how you purchase, use, and handle pet toys, your views on eco-friendly materials, and your interest in DIY pet toys. Your answers will help us understand what makes DIY difficult in real life, and how we might turn “buy then idle” toys into “make, reuse, and play longer.”",
+            "Participation is completely voluntary. You may skip any question you do not wish to answer. All responses will be used only for academic research and design purposes and will not be shared in a way that can identify you."
           ]
         }
       };
 
       const questionSections = [
-  {
-    id: "purchase",
-    zh: { title: "Section 1", summary: "Pet Toy Purchasing Behavior & Motivation" },
-    en: { title: "Section 1. Pet Toy Purchasing Behavior & Motivation", summary: "How often you buy, spend, and why." }
-  },
-  {
-    id: "usage",
-    zh: { title: "Section 2", summary: "Toy Usage & Disposal Patterns" },
-    en: { title: "Section 2. Toy Usage & Disposal Patterns", summary: "How toys are used, damaged, and handled." }
-  },
-  {
-    id: "sustainability",
-    zh: { title: "Section 3", summary: "Awareness & Attitudes Toward Sustainable Pet Products" },
-    en: { title: "Section 3. Awareness & Attitudes Toward Sustainable Pet Products", summary: "Views on eco-friendly materials and pricing." }
-  },
-  {
-    id: "reuse",
-    zh: { title: "Section 4", summary: "Attitudes Toward Toy Reuse / Recycling / Donation" },
-    en: { title: "Section 4. Attitudes Toward Toy Reuse / Recycling / Donation", summary: "Openness to recycle, incentives, and redesign." }
-  },
-  {
-    id: "basic",
-    zh: { title: "Section 5", summary: "More information" },
-    en: { title: "Section 5. More information", summary: "Pet types and basic profile." }
-  },
-  {
-    id: "open",
-    zh: { title: "Section 6", summary: "Open-Ended Questions" },
-    en: { title: "Section 6. Open-Ended Questions", summary: "Short answers and optional interview email." }
-  }
-];
+        {
+          id: "purchase",
+          zh: { title: "Section 1. Pet Toy Purchasing Behavior & Motivation", summary: "Frequency, spend, and purchase drivers." },
+          en: { title: "Section 1. Pet Toy Purchasing Behavior & Motivation", summary: "Frequency, spend, and purchase drivers." }
+        },
+        {
+          id: "usage",
+          zh: { title: "Section 2. Toy Usage & Disposal Patterns", summary: "Usage, damage, idle handling, and DIY interest." },
+          en: { title: "Section 2. Toy Usage & Disposal Patterns", summary: "Usage, damage, idle handling, and DIY interest." }
+        },
+        {
+          id: "sustainability",
+          zh: { title: "Section 3. Awareness & Attitudes Toward Sustainable Pet Products", summary: "Awareness, importance, and price sensitivity." },
+          en: { title: "Section 3. Awareness & Attitudes Toward Sustainable Pet Products", summary: "Awareness, importance, and price sensitivity." }
+        },
+        {
+          id: "reuse",
+          zh: { title: "Section 4. Attitudes Toward Toy Reuse / Recycling / Donation", summary: "Participation, factors, and redesign interest." },
+          en: { title: "Section 4. Attitudes Toward Toy Reuse / Recycling / Donation", summary: "Participation, factors, and redesign interest." }
+        },
+        {
+          id: "basic",
+          zh: { title: "Section 5. More information", summary: "Pet types, age range, and occupation." },
+          en: { title: "Section 5. More information", summary: "Pet types, age range, and occupation." }
+        },
+        {
+          id: "open",
+          zh: { title: "Section 6. Open-Ended Questions", summary: "Short answers and optional interview email." },
+          en: { title: "Section 6. Open-Ended Questions", summary: "Short answers and optional interview email." }
+        }
+      ];
 
       const uiMeta = {
         zh: {
@@ -1269,360 +1271,362 @@
           ? window.crypto.randomUUID()
           : `q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 
+      
       const defaultQuestions = [
-  {
-    id: "purchase-frequency",
-    sectionId: "purchase",
-    type: "single",
-    required: true,
-    text: { zh: "How often do you usually buy toys for your pet?", en: "How often do you usually buy toys for your pet?" },
-    options: [
-      { value: "weekly", label: { zh: "More than once a week", en: "More than once a week" } },
-      { value: "biweekly", label: { zh: "Once every two weeks", en: "Once every two weeks" } },
-      { value: "monthly-1-2", label: { zh: "1–2 times per month", en: "1–2 times per month" } },
-      { value: "two-three-months", label: { zh: "Once every 2–3 months", en: "Once every 2–3 months" } },
-      { value: "six-month", label: { zh: "Once every 6 months", en: "Once every 6 months" } },
-      { value: "yearly", label: { zh: "Once a year or less", en: "Once a year or less" } },
-      { value: "mood", label: { zh: "Irregular / depends on mood", en: "Irregular / depends on mood" } }
-    ]
-  },
-  {
-    id: "purchase-monthly-spend",
-    sectionId: "purchase",
-    type: "single",
-    required: true,
-    text: { zh: "Approximately how much do you spend on pet toys per month (USD)?", en: "Approximately how much do you spend on pet toys per month (USD)?" },
-    options: [
-      { value: "lt20", label: { zh: "Less than $20", en: "Less than $20" } },
-      { value: "20-50", label: { zh: "$20–50", en: "$20–50" } },
-      { value: "50-100", label: { zh: "$50–100", en: "$50–100" } },
-      { value: "100-200", label: { zh: "$100–200", en: "$100–200" } },
-      { value: "gt200", label: { zh: "More than $200", en: "More than $200" } }
-    ]
-  },
-  {
-    id: "purchase-motivation",
-    sectionId: "purchase",
-    type: "multi",
-    required: true,
-    text: { zh: "What are your main motivations for purchasing pet toys? (Select all that apply)", en: "What are your main motivations for purchasing pet toys? (Select all that apply)" },
-    options: [
-      { value: "replace", label: { zh: "My pet breaks old toys and needs replacements", en: "My pet breaks old toys and needs replacements" } },
-      { value: "social", label: { zh: "Influenced by social media or influencers", en: "Influenced by social media or influencers" } },
-      { value: "holiday", label: { zh: "Holiday or special-occasion gifts", en: "Holiday or special-occasion gifts" } },
-      { value: "cute", label: { zh: "I find the toys cute / aesthetically pleasing", en: "I find the toys cute / aesthetically pleasing" } },
-      { value: "new", label: { zh: "I want my pet to try something new", en: "I want my pet to try something new" } },
-      { value: "motivation-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "purchase-channel",
-    sectionId: "purchase",
-    type: "multi",
-    required: true,
-    text: { zh: "Where do you usually purchase pet toys? (Select all that apply)", en: "Where do you usually purchase pet toys? (Select all that apply)" },
-    options: [
-      { value: "ecommerce", label: { zh: "E-commerce platforms (Amazon,Taobao etc.)", en: "E-commerce platforms (Amazon,Taobao etc.)" } },
-      { value: "local", label: { zh: "Local pet stores", en: "Local pet stores" } },
-      { value: "social", label: { zh: "Social media platforms (TikTok, Instagram, RedNote etc.)", en: "Social media platforms (TikTok, Instagram, RedNote etc.)" } },
-      { value: "brand", label: { zh: "Brand websites", en: "Brand websites" } },
-      { value: "channel-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "purchase-factors",
-    sectionId: "purchase",
-    type: "multi",
-    required: true,
-    text: { zh: "What factors affect your willingness to purchase pet toys? (Select all that apply)", en: "What factors affect your willingness to purchase pet toys? (Select all that apply)" },
-    options: [
-      { value: "price", label: { zh: "Price is too high", en: "Price is too high" } },
-      { value: "aesthetic", label: { zh: "The product does not match my personal aesthetic", en: "The product does not match my personal aesthetic" } },
-      { value: "lose-interest", label: { zh: "I think my pet will quickly lose interest", en: "I think my pet will quickly lose interest" } },
-      { value: "quality", label: { zh: "Poor quality / breaks easily", en: "Poor quality / breaks easily" } },
-      { value: "safety", label: { zh: "Concerns about material safety or odor", en: "Concerns about material safety or odor" } },
-      { value: "already", label: { zh: "Already purchased too many / similar toys at home", en: "Already purchased too many / similar toys at home" } },
-      { value: "storage", label: { zh: "Lack of storage space", en: "Lack of storage space" } },
-      { value: "trust", label: { zh: "Distrust of the brand or its advertising", en: "Distrust of the brand or its advertising" } },
-      { value: "factor-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "purchase-restraint",
-    sectionId: "purchase",
-    type: "multi",
-    required: true,
-    text: { zh: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)", en: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)" },
-    options: [
-      { value: "spent-too-much", label: { zh: "Feeling like I’ve spent too much recently", en: "Feeling like I’ve spent too much recently" } },
-      { value: "pet-doesnt-need", label: { zh: "My pet does not truly need a new toy", en: "My pet does not truly need a new toy" } },
-      { value: "friends-remind", label: { zh: "Reminded by friends/family to spend rationally", en: "Reminded by friends/family to spend rationally" } },
-      { value: "reviews", label: { zh: "Product reviews or inspections make it seem not worth it", en: "Product reviews or inspections make it seem not worth it" } },
-      { value: "environment", label: { zh: "Environmental or sustainability concerns", en: "Environmental or sustainability concerns" } },
-      { value: "restraint-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "usage-interest-time",
-    sectionId: "usage",
-    type: "single",
-    required: true,
-    text: { zh: "On average, how long does it take for your pet to lose interest in a toy?", en: "On average, how long does it take for your pet to lose interest in a toy?" },
-    options: [
-      { value: "hours", label: { zh: "Within a few hours", en: "Within a few hours" } },
-      { value: "days", label: { zh: "Within 1–3 days", en: "Within 1–3 days" } },
-      { value: "week", label: { zh: "About 1 week", en: "About 1 week" } },
-      { value: "month", label: { zh: "About 1 month", en: "About 1 month" } },
-      { value: "3months", label: { zh: "Still interested after 3 months", en: "Still interested after 3 months" } },
-      { value: "depends", label: { zh: "Depends on the type of toy", en: "Depends on the type of toy" } },
-      { value: "unsure", label: { zh: "Not sure / haven’t noticed", en: "Not sure / haven’t noticed" } }
-    ]
-  },
-  {
-    id: "usage-damage-time",
-    sectionId: "usage",
-    type: "single",
-    required: true,
-    text: { zh: "On average, how long does it take for your pet’s toys to become damaged?", en: "On average, how long does it take for your pet’s toys to become damaged?" },
-    options: [
-      { value: "hours", label: { zh: "Within a few hours", en: "Within a few hours" } },
-      { value: "days", label: { zh: "Within 1–3 days", en: "Within 1–3 days" } },
-      { value: "week", label: { zh: "About 1 week", en: "About 1 week" } },
-      { value: "month", label: { zh: "About 1 month", en: "About 1 month" } },
-      { value: "3months", label: { zh: "Still usable after 3 months", en: "Still usable after 3 months" } },
-      { value: "depends", label: { zh: "Depends on the type of toy", en: "Depends on the type of toy" } },
-      { value: "unsure", label: { zh: "Not sure / haven’t noticed", en: "Not sure / haven’t noticed" } }
-    ]
-  },
-  {
-    id: "usage-toy-count",
-    sectionId: "usage",
-    type: "single",
-    required: true,
-    text: { zh: "How many toys does your pet currently have?", en: "How many toys does your pet currently have?" },
-    options: [
-      { value: "1-3", label: { zh: "1–3", en: "1–3" } },
-      { value: "4-6", label: { zh: "4–6", en: "4–6" } },
-      { value: "7-10", label: { zh: "7–10", en: "7–10" } },
-      { value: "10+", label: { zh: "More than 10", en: "More than 10" } }
-    ]
-  },
-  {
-    id: "usage-favorite-share",
-    sectionId: "usage",
-    type: "single",
-    required: true,
-    text: { zh: "What percentage of the toys does your pet frequently play with?", en: "What percentage of the toys does your pet frequently play with?" },
-    options: [
-      { value: "80plus", label: { zh: "Over 80%", en: "Over 80%" } },
-      { value: "half", label: { zh: "About half", en: "About half" } },
-      { value: "less-half", label: { zh: "Less than half", en: "Less than half" } },
-      { value: "few-favorites", label: { zh: "Only one or two favorites", en: "Only one or two favorites" } }
-    ]
-  },
-  {
-    id: "usage-unused",
-    sectionId: "usage",
-    type: "multi",
-    required: true,
-    text: { zh: "How do you usually handle unused toys? (Select all that apply)", en: "How do you usually handle unused toys? (Select all that apply)" },
-    options: [
-      { value: "discard", label: { zh: "Throw them away", en: "Throw them away" } },
-      { value: "store", label: { zh: "Store them without using", en: "Store them without using" } },
-      { value: "repurpose", label: { zh: "Repurpose into other toys", en: "Repurpose into other toys" } },
-      { value: "clean", label: { zh: "Clean and reuse", en: "Clean and reuse" } },
-      { value: "donate", label: { zh: "Give away / donate", en: "Give away / donate" } },
-      { value: "unused-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "usage-damaged",
-    sectionId: "usage",
-    type: "multi",
-    required: true,
-    text: { zh: "How do you usually handle damaged toys? (Select all that apply)", en: "How do you usually handle damaged toys? (Select all that apply)" },
-    options: [
-      { value: "discard", label: { zh: "Throw them away", en: "Throw them away" } },
-      { value: "store", label: { zh: "Store them without using", en: "Store them without using" } },
-      { value: "repurpose", label: { zh: "Repurpose into other toys", en: "Repurpose into other toys" } },
-      { value: "clean", label: { zh: "Clean and reuse", en: "Clean and reuse" } },
-      { value: "donate", label: { zh: "Give away / donate", en: "Give away / donate" } },
-      { value: "damaged-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "diy-willingness",
-    sectionId: "usage",
-    type: "single",
-    required: true,
-    text: { zh: "Are you willing to make DIY toys for your pet?", en: "Are you willing to make DIY toys for your pet?" },
-    options: [
-      { value: "very", label: { zh: "Very willing — I enjoy crafting", en: "Very willing — I enjoy crafting" } },
-      { value: "with-guide", label: { zh: "Willing, but only with tutorials/guidance", en: "Willing, but only with tutorials/guidance" } },
-      { value: "concerned", label: { zh: "I’m interested, but concerned about safety or pet disliking it", en: "I’m interested, but concerned about safety or pet disliking it" } },
-      { value: "not-enjoy", label: { zh: "I’m interested, but don’t enjoy crafting", en: "I’m interested, but don’t enjoy crafting" } }
-    ]
-  },
-  {
-    id: "diy-comment",
-    sectionId: "usage",
-    type: "text",
-    required: false,
-    text: { zh: "Additional comment", en: "Additional comment" },
-    placeholder: { zh: "Optional", en: "Optional" }
-  },
-  {
-    id: "sustain-awareness",
-    sectionId: "sustainability",
-    type: "single",
-    required: true,
-    text: { zh: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?", en: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?" },
-    options: [
-      { value: "aware", label: { zh: "Yes, and I understand the concept", en: "Yes, and I understand the concept" } },
-      { value: "heard", label: { zh: "Yes, but I do not understand much about it", en: "Yes, but I do not understand much about it" } },
-      { value: "learn", label: { zh: "No,but want to learn more", en: "No,but want to learn more" } },
-      { value: "not-interested", label: { zh: "No, not interested in it at all", en: "No, not interested in it at all" } }
-    ]
-  },
-  {
-    id: "sustain-importance",
-    sectionId: "sustainability",
-    type: "single",
-    required: true,
-    text: { zh: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?", en: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?" },
-    options: [
-      { value: "very", label: { zh: "Very important", en: "Very important" } },
-      { value: "somewhat", label: { zh: "Somewhat important", en: "Somewhat important" } },
-      { value: "neutral", label: { zh: "Neutral", en: "Neutral" } },
-      { value: "not-very", label: { zh: "Not very important", en: "Not very important" } },
-      { value: "not-at-all", label: { zh: "Not important at all", en: "Not important at all" } }
-    ]
-  },
-  {
-    id: "sustain-premium",
-    sectionId: "sustainability",
-    type: "single",
-    required: true,
-    text: { zh: "If eco-friendly pet toys cost slightly higher than regular ones, would you be willing to purchase them?", en: "If eco-friendly pet toys cost slightly higher than regular ones, would you be willing to purchase them?" },
-    options: [
-      { value: "yes", label: { zh: "Yes", en: "Yes" } },
-      { value: "depends", label: { zh: "Depends on the situation", en: "Depends on the situation" } },
-      { value: "no", label: { zh: "No", en: "No" } }
-    ]
-  },
-  {
-    id: "reuse-participation",
-    sectionId: "reuse",
-    type: "single",
-    required: true,
-    text: { zh: "If a brand or platform offered toy recycling, refurbishing, or donation services, would you participate?", en: "If a brand or platform offered toy recycling, refurbishing, or donation services, would you participate?" },
-    options: [
-      { value: "definitely", label: { zh: "Definitely", en: "Definitely" } },
-      { value: "probably", label: { zh: "Probably", en: "Probably" } },
-      { value: "depends", label: { zh: "Depends", en: "Depends" } },
-      { value: "no", label: { zh: "No", en: "No" } }
-    ]
-  },
-  {
-    id: "reuse-factors",
-    sectionId: "reuse",
-    type: "multi",
-    required: true,
-    text: { zh: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)", en: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)" },
-    options: [
-      { value: "convenience", label: { zh: "Convenience (easily accessible drop-off points)", en: "Convenience (easily accessible drop-off points)" } },
-      { value: "hygiene", label: { zh: "Hygiene and safety concerns", en: "Hygiene and safety concerns" } },
-      { value: "quantity", label: { zh: "Number of unused toys at home", en: "Number of unused toys at home" } },
-      { value: "fees", label: { zh: "Service fees", en: "Service fees" } },
-      { value: "trust", label: { zh: "Trust in the organization", en: "Trust in the organization" } },
-      { value: "rewards", label: { zh: "Rewards or incentives", en: "Rewards or incentives" } },
-      { value: "responsibility", label: { zh: "Environmental or social responsibility awareness", en: "Environmental or social responsibility awareness" } },
-      { value: "reuse-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "reuse-redesign",
-    sectionId: "reuse",
-    type: "single",
-    required: true,
-    text: { zh: "If old toys were redesigned into new products (e.g., pet accessories or decorative items), would you consider using or purchasing them?", en: "If old toys were redesigned into new products (e.g., pet accessories or decorative items), would you consider using or purchasing them?" },
-    options: [
-      { value: "very", label: { zh: "Very willing", en: "Very willing" } },
-      { value: "interested", label: { zh: "Somewhat interested", en: "Somewhat interested" } },
-      { value: "not-willing", label: { zh: "Not very willing", en: "Not very willing" } },
-      { value: "not-interested", label: { zh: "Not interested at all", en: "Not interested at all" } }
-    ]
-  },
-  {
-    id: "basic-pet-type",
-    sectionId: "basic",
-    type: "multi",
-    required: true,
-    text: { zh: "What type(s) of pets do you have, and how many?", en: "What type(s) of pets do you have, and how many?" },
-    options: [
-      { value: "dog", label: { zh: "Dog(s):", en: "Dog(s):" }, hasTextInput: true, placeholder: { zh: "Enter number", en: "Enter number" } },
-      { value: "cat", label: { zh: "Cat(s):", en: "Cat(s):" }, hasTextInput: true, placeholder: { zh: "Enter number", en: "Enter number" } }
-    ]
-  },
-  {
-    id: "basic-age",
-    sectionId: "basic",
-    type: "single",
-    required: true,
-    text: { zh: "What is your age range?", en: "What is your age range?" },
-    options: [
-      { value: "18-23", label: { zh: "18–23", en: "18–23" } },
-      { value: "23-30", label: { zh: "23–30", en: "23–30" } },
-      { value: "30-36", label: { zh: "30–36", en: "30–36" } },
-      { value: "36-44", label: { zh: "36–44", en: "36–44" } }
-    ]
-  },
-  {
-    id: "basic-occupation",
-    sectionId: "basic",
-    type: "multi",
-    required: true,
-    text: { zh: "What is your current occupation or status? (Select all that apply)", en: "What is your current occupation or status? (Select all that apply)" },
-    options: [
-      { value: "student", label: { zh: "Student", en: "Student" } },
-      { value: "fulltime", label: { zh: "Full-time employee", en: "Full-time employee" } },
-      { value: "freelancer", label: { zh: "Freelancer", en: "Freelancer" } },
-      { value: "occupation-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
-    ]
-  },
-  {
-    id: "open-waste",
-    sectionId: "open",
-    type: "text",
-    required: true,
-    text: { zh: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?", en: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?" },
-    placeholder: { zh: "Short answer", en: "Short answer" }
-  },
-  {
-    id: "open-innovation",
-    sectionId: "open",
-    type: "text",
-    required: true,
-    text: { zh: "What improvements or innovations would you like to see in future pet toys?", en: "What improvements or innovations would you like to see in future pet toys?" },
-    placeholder: { zh: "Short answer", en: "Short answer" }
-  },
-  {
-    id: "open-diy-barrier",
-    sectionId: "open",
-    type: "text",
-    required: true,
-    text: { zh: "What currently discourages you the most from DIY-ing pet toys?", en: "What currently discourages you the most from DIY-ing pet toys?" },
-    placeholder: { zh: "Short answer", en: "Short answer" }
-  },
-  {
-    id: "open-email",
-    sectionId: "open",
-    type: "text",
-    required: false,
-    text: { zh: "Would you be open to a short interview in the future? If yes, please share your email address. Thank you!", en: "Would you be open to a short interview in the future? If yes, please share your email address. Thank you!" },
-    placeholder: { zh: "Your email (optional)", en: "Your email (optional)" }
-  }
-];
+        {
+          id: "purchase-frequency",
+          sectionId: "purchase",
+          type: "single",
+          required: true,
+          text: { zh: "How often do you usually buy toys for your pet?", en: "How often do you usually buy toys for your pet?" },
+          options: [
+            { value: "weekly", label: { zh: "More than once a week", en: "More than once a week" } },
+            { value: "biweekly", label: { zh: "Once every two weeks", en: "Once every two weeks" } },
+            { value: "monthly-1-2", label: { zh: "1–2 times per month", en: "1–2 times per month" } },
+            { value: "two-three-months", label: { zh: "Once every 2–3 months", en: "Once every 2–3 months" } },
+            { value: "six-month", label: { zh: "Once every 6 months", en: "Once every 6 months" } },
+            { value: "yearly", label: { zh: "Once a year or less", en: "Once a year or less" } },
+            { value: "mood", label: { zh: "Irregular / depends on mood", en: "Irregular / depends on mood" } }
+          ]
+        },
+        {
+          id: "purchase-monthly-spend",
+          sectionId: "purchase",
+          type: "single",
+          required: true,
+          text: { zh: "Approximately how much do you spend on pet toys per month (USD)?", en: "Approximately how much do you spend on pet toys per month (USD)?" },
+          options: [
+            { value: "lt20", label: { zh: "Less than $20", en: "Less than $20" } },
+            { value: "20-50", label: { zh: "$20–50", en: "$20–50" } },
+            { value: "50-100", label: { zh: "$50–100", en: "$50–100" } },
+            { value: "100-200", label: { zh: "$100–200", en: "$100–200" } },
+            { value: "gt200", label: { zh: "More than $200", en: "More than $200" } }
+          ]
+        },
+        {
+          id: "purchase-motivation",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: { zh: "What are your main motivations for purchasing pet toys? (Select all that apply)", en: "What are your main motivations for purchasing pet toys? (Select all that apply)" },
+          options: [
+            { value: "replace", label: { zh: "My pet breaks old toys and needs replacements", en: "My pet breaks old toys and needs replacements" } },
+            { value: "social", label: { zh: "Influenced by social media or influencers", en: "Influenced by social media or influencers" } },
+            { value: "holiday", label: { zh: "Holiday or special-occasion gifts", en: "Holiday or special-occasion gifts" } },
+            { value: "cute", label: { zh: "I find the toys cute / aesthetically pleasing", en: "I find the toys cute / aesthetically pleasing" } },
+            { value: "new", label: { zh: "I want my pet to try something new", en: "I want my pet to try something new" } },
+            { value: "motivation-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "purchase-channel",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: { zh: "Where do you usually purchase pet toys? (Select all that apply)", en: "Where do you usually purchase pet toys? (Select all that apply)" },
+          options: [
+            { value: "ecommerce", label: { zh: "E-commerce platforms (Amazon,Taobao etc.)", en: "E-commerce platforms (Amazon,Taobao etc.)" } },
+            { value: "local", label: { zh: "Local pet stores", en: "Local pet stores" } },
+            { value: "social", label: { zh: "Social media platforms (TikTok, Instagram, RedNote etc.)", en: "Social media platforms (TikTok, Instagram, RedNote etc.)" } },
+            { value: "brand", label: { zh: "Brand websites", en: "Brand websites" } },
+            { value: "channel-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "purchase-factors",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: { zh: "What factors affect your willingness to purchase pet toys? (Select all that apply)", en: "What factors affect your willingness to purchase pet toys? (Select all that apply)" },
+          options: [
+            { value: "price", label: { zh: "Price is too high", en: "Price is too high" } },
+            { value: "aesthetic", label: { zh: "The product does not match my personal aesthetic", en: "The product does not match my personal aesthetic" } },
+            { value: "lose-interest", label: { zh: "I think my pet will quickly lose interest", en: "I think my pet will quickly lose interest" } },
+            { value: "quality", label: { zh: "Poor quality / breaks easily", en: "Poor quality / breaks easily" } },
+            { value: "safety", label: { zh: "Concerns about material safety or odor", en: "Concerns about material safety or odor" } },
+            { value: "already", label: { zh: "Already purchased too many / similar toys at home", en: "Already purchased too many / similar toys at home" } },
+            { value: "storage", label: { zh: "Lack of storage space", en: "Lack of storage space" } },
+            { value: "trust", label: { zh: "Distrust of the brand or its advertising", en: "Distrust of the brand or its advertising" } },
+            { value: "factor-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "purchase-restraint",
+          sectionId: "purchase",
+          type: "multi",
+          required: true,
+          text: { zh: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)", en: "In what situations do you usually control or restrain your desire to buy toys? (Select all that apply)" },
+          options: [
+            { value: "spent-too-much", label: { zh: "Feeling like I’ve spent too much recently", en: "Feeling like I’ve spent too much recently" } },
+            { value: "pet-doesnt-need", label: { zh: "My pet does not truly need a new toy", en: "My pet does not truly need a new toy" } },
+            { value: "friends-remind", label: { zh: "Reminded by friends/family to spend rationally", en: "Reminded by friends/family to spend rationally" } },
+            { value: "reviews", label: { zh: "Product reviews or inspections make it seem not worth it", en: "Product reviews or inspections make it seem not worth it" } },
+            { value: "environment", label: { zh: "Environmental or sustainability concerns", en: "Environmental or sustainability concerns" } },
+            { value: "restraint-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "usage-interest-time",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: { zh: "On average, how long does it take for your pet to lose interest in a toy?", en: "On average, how long does it take for your pet to lose interest in a toy?" },
+          options: [
+            { value: "hours", label: { zh: "Within a few hours", en: "Within a few hours" } },
+            { value: "days", label: { zh: "Within 1–3 days", en: "Within 1–3 days" } },
+            { value: "week", label: { zh: "About 1 week", en: "About 1 week" } },
+            { value: "month", label: { zh: "About 1 month", en: "About 1 month" } },
+            { value: "3months", label: { zh: "Still interested after 3 months", en: "Still interested after 3 months" } },
+            { value: "depends", label: { zh: "Depends on the type of toy", en: "Depends on the type of toy" } },
+            { value: "unsure", label: { zh: "Not sure / haven’t noticed", en: "Not sure / haven’t noticed" } }
+          ]
+        },
+        {
+          id: "usage-damage-time",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: { zh: "On average, how long does it take for your pet’s toys to become damaged?", en: "On average, how long does it take for your pet’s toys to become damaged?" },
+          options: [
+            { value: "hours", label: { zh: "Within a few hours", en: "Within a few hours" } },
+            { value: "days", label: { zh: "Within 1–3 days", en: "Within 1–3 days" } },
+            { value: "week", label: { zh: "About 1 week", en: "About 1 week" } },
+            { value: "month", label: { zh: "About 1 month", en: "About 1 month" } },
+            { value: "3months", label: { zh: "Still usable after 3 months", en: "Still usable after 3 months" } },
+            { value: "depends", label: { zh: "Depends on the type of toy", en: "Depends on the type of toy" } },
+            { value: "unsure", label: { zh: "Not sure / haven’t noticed", en: "Not sure / haven’t noticed" } }
+          ]
+        },
+        {
+          id: "usage-toy-count",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: { zh: "How many toys does your pet currently have?", en: "How many toys does your pet currently have?" },
+          options: [
+            { value: "1-3", label: { zh: "1–3", en: "1–3" } },
+            { value: "4-6", label: { zh: "4–6", en: "4–6" } },
+            { value: "7-10", label: { zh: "7–10", en: "7–10" } },
+            { value: "10+", label: { zh: "More than 10", en: "More than 10" } }
+          ]
+        },
+        {
+          id: "usage-favorite-share",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: { zh: "What percentage of the toys does your pet frequently play with?", en: "What percentage of the toys does your pet frequently play with?" },
+          options: [
+            { value: "80plus", label: { zh: "Over 80%", en: "Over 80%" } },
+            { value: "half", label: { zh: "About half", en: "About half" } },
+            { value: "less-half", label: { zh: "Less than half", en: "Less than half" } },
+            { value: "few-favorites", label: { zh: "Only one or two favorites", en: "Only one or two favorites" } }
+          ]
+        },
+        {
+          id: "usage-unused",
+          sectionId: "usage",
+          type: "multi",
+          required: true,
+          text: { zh: "How do you usually handle unused toys? (Select all that apply)", en: "How do you usually handle unused toys? (Select all that apply)" },
+          options: [
+            { value: "discard", label: { zh: "Throw them away", en: "Throw them away" } },
+            { value: "store", label: { zh: "Store them without using", en: "Store them without using" } },
+            { value: "repurpose", label: { zh: "Repurpose into other toys", en: "Repurpose into other toys" } },
+            { value: "clean", label: { zh: "Clean and reuse", en: "Clean and reuse" } },
+            { value: "donate", label: { zh: "Give away / donate", en: "Give away / donate" } },
+            { value: "unused-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "usage-damaged",
+          sectionId: "usage",
+          type: "multi",
+          required: true,
+          text: { zh: "How do you usually handle damaged toys? (Select all that apply)", en: "How do you usually handle damaged toys? (Select all that apply)" },
+          options: [
+            { value: "discard", label: { zh: "Throw them away", en: "Throw them away" } },
+            { value: "store", label: { zh: "Store them without using", en: "Store them without using" } },
+            { value: "repurpose", label: { zh: "Repurpose into other toys", en: "Repurpose into other toys" } },
+            { value: "clean", label: { zh: "Clean and reuse", en: "Clean and reuse" } },
+            { value: "donate", label: { zh: "Give away / donate", en: "Give away / donate" } },
+            { value: "damaged-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "diy-willingness",
+          sectionId: "usage",
+          type: "single",
+          required: true,
+          text: { zh: "Are you willing to make DIY toys for your pet?", en: "Are you willing to make DIY toys for your pet?" },
+          options: [
+            { value: "very", label: { zh: "Very willing — I enjoy crafting", en: "Very willing — I enjoy crafting" } },
+            { value: "with-guide", label: { zh: "Willing, but only with tutorials/guidance", en: "Willing, but only with tutorials/guidance" } },
+            { value: "concerned", label: { zh: "I’m interested, but concerned about safety or pet disliking it", en: "I’m interested, but concerned about safety or pet disliking it" } },
+            { value: "not-enjoy", label: { zh: "I’m interested, but don’t enjoy crafting", en: "I’m interested, but don’t enjoy crafting" } }
+          ]
+        },
+        {
+          id: "diy-comment",
+          sectionId: "usage",
+          type: "text",
+          required: false,
+          text: { zh: "Additional comment", en: "Additional comment" },
+          placeholder: { zh: "Optional", en: "Optional" }
+        },
+        {
+          id: "sustain-awareness",
+          sectionId: "sustainability",
+          type: "single",
+          required: true,
+          text: { zh: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?", en: "Have you heard of “sustainable pet products” or “eco-friendly pet toys”?" },
+          options: [
+            { value: "aware", label: { zh: "Yes, and I understand the concept", en: "Yes, and I understand the concept" } },
+            { value: "heard", label: { zh: "Yes, but I do not understand much about it", en: "Yes, but I do not understand much about it" } },
+            { value: "learn", label: { zh: "No,but want to learn more", en: "No,but want to learn more" } },
+            { value: "not-interested", label: { zh: "No, not interested in it at all", en: "No, not interested in it at all" } }
+          ]
+        },
+        {
+          id: "sustain-importance",
+          sectionId: "sustainability",
+          type: "single",
+          required: true,
+          text: { zh: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?", en: "How important do you think eco-friendly or recyclable materials are when choosing pet toys?" },
+          options: [
+            { value: "very", label: { zh: "Very important", en: "Very important" } },
+            { value: "somewhat", label: { zh: "Somewhat important", en: "Somewhat important" } },
+            { value: "neutral", label: { zh: "Neutral", en: "Neutral" } },
+            { value: "not-very", label: { zh: "Not very important", en: "Not very important" } },
+            { value: "not-at-all", label: { zh: "Not important at all", en: "Not important at all" } }
+          ]
+        },
+        {
+          id: "sustain-premium",
+          sectionId: "sustainability",
+          type: "single",
+          required: true,
+          text: { zh: "If eco-friendly pet toys cost slightly higher than regular ones, would you be willing to purchase them?", en: "If eco-friendly pet toys cost slightly higher than regular ones, would you be willing to purchase them?" },
+          options: [
+            { value: "yes", label: { zh: "Yes", en: "Yes" } },
+            { value: "depends", label: { zh: "Depends on the situation", en: "Depends on the situation" } },
+            { value: "no", label: { zh: "No", en: "No" } }
+          ]
+        },
+        {
+          id: "reuse-participation",
+          sectionId: "reuse",
+          type: "single",
+          required: true,
+          text: { zh: "If a brand or platform offered toy recycling,/refurbishing,/ or donation services, would you participate?", en: "If a brand or platform offered toy recycling,/refurbishing,/ or donation services, would you participate?" },
+          options: [
+            { value: "definitely", label: { zh: "Definitely", en: "Definitely" } },
+            { value: "probably", label: { zh: "Probably", en: "Probably" } },
+            { value: "depends", label: { zh: "Depends", en: "Depends" } },
+            { value: "no", label: { zh: "No", en: "No" } }
+          ]
+        },
+        {
+          id: "reuse-factors",
+          sectionId: "reuse",
+          type: "multi",
+          required: true,
+          text: { zh: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)", en: "What factors influence your willingness to participate in toy reuse programs? (Select all that apply)" },
+          options: [
+            { value: "convenience", label: { zh: "Convenience (easily accessible drop-off points)", en: "Convenience (easily accessible drop-off points)" } },
+            { value: "hygiene", label: { zh: "Hygiene and safety concerns", en: "Hygiene and safety concerns" } },
+            { value: "quantity", label: { zh: "Number of unused toys at home", en: "Number of unused toys at home" } },
+            { value: "fees", label: { zh: "Service fees", en: "Service fees" } },
+            { value: "trust", label: { zh: "Trust in the organization", en: "Trust in the organization" } },
+            { value: "rewards", label: { zh: "Rewards or incentives", en: "Rewards or incentives" } },
+            { value: "responsibility", label: { zh: "Environmental or social responsibility awareness", en: "Environmental or social responsibility awareness" } },
+            { value: "reuse-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "reuse-redesign",
+          sectionId: "reuse",
+          type: "single",
+          required: true,
+          text: { zh: "If old toys were redesigned into new products (e.g., pet accessories or decorative items), would you consider using or purchasing them?", en: "If old toys were redesigned into new products (e.g., pet accessories or decorative items), would you consider using or purchasing them?" },
+          options: [
+            { value: "very", label: { zh: "Very willing", en: "Very willing" } },
+            { value: "interested", label: { zh: "Somewhat interested", en: "Somewhat interested" } },
+            { value: "not-willing", label: { zh: "Not very willing", en: "Not very willing" } },
+            { value: "not-interested", label: { zh: "Not interested at all", en: "Not interested at all" } }
+          ]
+        },
+        {
+          id: "basic-pet-type",
+          sectionId: "basic",
+          type: "multi",
+          required: true,
+          text: { zh: "What type(s) of pets do you have, and how many?", en: "What type(s) of pets do you have, and how many?" },
+          options: [
+            { value: "dog", label: { zh: "Dog(s):", en: "Dog(s):" }, hasTextInput: true, placeholder: { zh: "Enter number", en: "Enter number" } },
+            { value: "cat", label: { zh: "Cat(s):", en: "Cat(s):" }, hasTextInput: true, placeholder: { zh: "Enter number", en: "Enter number" } }
+          ]
+        },
+        {
+          id: "basic-age",
+          sectionId: "basic",
+          type: "single",
+          required: true,
+          text: { zh: "What is your age range?", en: "What is your age range?" },
+          options: [
+            { value: "18-23", label: { zh: "18–23", en: "18–23" } },
+            { value: "23-30", label: { zh: "23–30", en: "23–30" } },
+            { value: "30-36", label: { zh: "30–36", en: "30–36" } },
+            { value: "36-44", label: { zh: "36–44", en: "36–44" } }
+          ]
+        },
+        {
+          id: "basic-occupation",
+          sectionId: "basic",
+          type: "multi",
+          required: true,
+          text: { zh: "What is your current occupation or status? (Select all that apply)", en: "What is your current occupation or status? (Select all that apply)" },
+          options: [
+            { value: "student", label: { zh: "Student", en: "Student" } },
+            { value: "fulltime", label: { zh: "Full-time employee", en: "Full-time employee" } },
+            { value: "freelancer", label: { zh: "Freelancer", en: "Freelancer" } },
+            { value: "occupation-other", label: { zh: "Other (please specify)", en: "Other (please specify)" }, hasTextInput: true, placeholder: { zh: "Please specify", en: "Please specify" } }
+          ]
+        },
+        {
+          id: "open-waste",
+          sectionId: "open",
+          type: "text",
+          required: true,
+          text: { zh: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?", en: "In your opinion, what aspects of current pet toys are the most wasteful or unsustainable?" },
+          placeholder: { zh: "Short answer", en: "Short answer" }
+        },
+        {
+          id: "open-innovation",
+          sectionId: "open",
+          type: "text",
+          required: true,
+          text: { zh: "What improvements or innovations would you like to see in future pet toys?", en: "What improvements or innovations would you like to see in future pet toys?" },
+          placeholder: { zh: "Short answer", en: "Short answer" }
+        },
+        {
+          id: "open-diy-barrier",
+          sectionId: "open",
+          type: "text",
+          required: true,
+          text: { zh: "What currently discourages you the most from DIY-ing pet toys?", en: "What currently discourages you the most from DIY-ing pet toys?" },
+          placeholder: { zh: "Short answer", en: "Short answer" }
+        },
+        {
+          id: "open-email",
+          sectionId: "open",
+          type: "text",
+          required: false,
+          text: { zh: "Would you be open to a short interview in the future? If yes, please share your email address. Thank you!", en: "Would you be open to a short interview in the future? If yes, please share your email address. Thank you!" },
+          placeholder: { zh: "Your email (optional)", en: "Your email (optional)" }
+        }
+      ];
+
 
       const defaultContent = {
         zh: {
