@@ -1920,9 +1920,11 @@
 
       const initQrSection = () => {
         if (!ui.qrUrlInput) return;
-        const stored = loadStoredQrUrl();
-        const initialUrl =
-          stored && isValidUrl(stored) ? stored : DEFAULT_QR_URL || window.location.href;
+        let initialUrl = currentQrUrl;
+        if (!initialUrl) {
+          const stored = loadStoredQrUrl();
+          initialUrl = stored && isValidUrl(stored) ? stored : DEFAULT_QR_URL || window.location.href;
+        }
         ui.qrUrlInput.value = initialUrl;
         persistQrUrl(initialUrl);
         renderQrCode(initialUrl);
@@ -2845,7 +2847,16 @@
           persistContent();
           ui.saveButton.disabled = true;
           try {
-            await saveRemoteConfig({ questions, contentText, logoDataUrl: currentLogoDataUrl });
+            await saveRemoteConfig({
+              questions,
+              contentText,
+              logoDataUrl: currentLogoDataUrl,
+              qrUrl:
+                (currentQrUrl && isValidUrl(currentQrUrl) && currentQrUrl) ||
+                (loadStoredQrUrl() && isValidUrl(loadStoredQrUrl()) && loadStoredQrUrl()) ||
+                DEFAULT_QR_URL ||
+                window.location.href
+            });
             alert(meta.saveSuccess || "已保存");
           } catch (error) {
             alert(currentLanguage === "zh" ? "保存失败，请稍后再试。" : "Failed to save. Please try again.");
@@ -2936,6 +2947,16 @@
               applyLogoSrc(currentLogoDataUrl);
               persistLogo(currentLogoDataUrl);
               syncedLogo = true;
+            }
+            if (remoteConfig.qrUrl && isValidUrl(remoteConfig.qrUrl)) {
+              currentQrUrl = remoteConfig.qrUrl;
+              persistQrUrl(remoteConfig.qrUrl);
+              if (ui.qrUrlInput) {
+                ui.qrUrlInput.value = remoteConfig.qrUrl;
+              }
+              if (ui.qrCode) {
+                renderQrCode(remoteConfig.qrUrl);
+              }
             }
           }
         } catch (error) {
