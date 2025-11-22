@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Survey Insights Dashboard</title>
+    <script src="./config.js"></script>
     <style>
       :root {
         color-scheme: light;
@@ -223,15 +224,20 @@
     </div>
 
     <script>
-      const SUPABASE_URL = "https://tgckygkqjdihvdazqwqe.supabase.co";
-      const SUPABASE_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnY2t5Z2txamRpaHZkYXpxd3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4OTc1MjksImV4cCI6MjA3ODQ3MzUyOX0.GKcnJIL3Ffyj9HljHJqeWObuFOFImnUbCY5rZ8V9BHw";
-      const SUPABASE_RESPONSES_ENDPOINT = `${SUPABASE_URL}/rest/v1/survey_responses`;
-      const supabaseHeaders = {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json"
-      };
+      const runtimeConfig = window.__SURVEY_CONFIG__ || {};
+      const SUPABASE_URL = runtimeConfig.supabaseUrl;
+      const SUPABASE_KEY = runtimeConfig.supabaseKey;
+      const REMOTE_API_ENABLED = Boolean(SUPABASE_URL && SUPABASE_KEY);
+      const SUPABASE_RESPONSES_ENDPOINT = REMOTE_API_ENABLED
+        ? `${SUPABASE_URL}/rest/v1/survey_responses`
+        : null;
+      const supabaseHeaders = REMOTE_API_ENABLED
+        ? {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        : null;
 
       const questionSections = [
         { id: "basic", title: "Basic information" },
@@ -572,6 +578,18 @@
 
       const loadResponses = async () => {
         if (refreshButton) refreshButton.disabled = true;
+        if (!REMOTE_API_ENABLED || !SUPABASE_RESPONSES_ENDPOINT) {
+          const grid = document.getElementById("question-grid");
+          const feed = document.getElementById("text-feed");
+          const meta = document.getElementById("summary-meta");
+          if (meta) {
+            meta.textContent = "Cloud data not configured (missing Supabase URL/key).";
+          }
+          if (grid) grid.innerHTML = "Configure Supabase to see stats.";
+          if (feed) feed.innerHTML = "Configure Supabase to see open responses.";
+          if (refreshButton) refreshButton.disabled = false;
+          return;
+        }
         try {
           const params = new URLSearchParams({
             select: "answers,submitted_at",
@@ -579,7 +597,7 @@
             limit: "500"
           });
           const response = await fetch(`${SUPABASE_RESPONSES_ENDPOINT}?${params.toString()}`, {
-            headers: supabaseHeaders
+            headers: supabaseHeaders || {}
           });
           if (!response.ok) {
             throw new Error(`Failed to fetch responses: ${response.status}`);
