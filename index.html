@@ -2653,15 +2653,17 @@
               entry.otherText = otherText;
             }
             submissionPayload[question.id] = entry;
-          } else if (question.type === "text") {
-            const textValue = (formData.get(question.id) || "").toString().trim();
-            if (!textValue) {
+        } else if (question.type === "text") {
+          const textValue = (formData.get(question.id) || "").toString().trim();
+          if (!textValue) {
+            if (question.required) {
               markMissing(question);
-              return;
             }
-            submissionPayload[question.id] = { type: "text", text: textValue };
+            return;
           }
-        });
+          submissionPayload[question.id] = { type: "text", text: textValue };
+        }
+      });
 
         if (hasMissing) {
           if (firstInvalidQuestion) {
