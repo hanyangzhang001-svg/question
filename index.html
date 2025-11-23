@@ -1974,6 +1974,9 @@
         window.history.replaceState({}, "", url.toString());
         setQrEditable(true);
         setStatsVisibility(true);
+        renderStats();
+        loadCloudStats();
+        loadResponseFeed();
       };
 
       const disableAdminMode = () => {
@@ -1991,25 +1994,12 @@
         url.searchParams.delete("admin");
         window.history.replaceState({}, "", url.toString());
         setQrEditable(false);
-        setStatsVisibility(false);
         switchScreen("builder");
       };
 
       const setText = (el, value) => {
         if (el) {
           el.textContent = value;
-        }
-      };
-
-      const setStatsVisibility = (visible) => {
-        if (ui.statsTab) {
-          ui.statsTab.hidden = !visible;
-        }
-        if (ui.statsView) {
-          ui.statsView.hidden = !visible;
-        }
-        if (!visible && ui.builderTab) {
-          ui.builderTab.classList.add("active");
         }
       };
 
@@ -2371,20 +2361,6 @@
       };
 
       const renderStats = () => {
-        if (!adminEnabled) {
-          if (ui.statsContent) {
-            ui.statsContent.innerHTML =
-              currentLanguage === "zh"
-                ? "<p class=\"stats-empty\">仅管理员模式可查看统计。</p>"
-                : "<p class=\"stats-empty\">Stats are visible only in admin mode.</p>";
-          }
-          if (ui.statsEmpty) {
-            ui.statsEmpty.hidden = false;
-            ui.statsEmpty.textContent =
-              currentLanguage === "zh" ? "仅管理员模式可查看统计。" : "Stats are visible only in admin mode.";
-          }
-          return;
-        }
         if (!ui.statsContent) return;
         const meta = uiMeta[currentLanguage];
         if (statsLoading) {
@@ -2495,14 +2471,6 @@
         if (!ui.responsesFeed || !ui.responsesEmpty) return;
         const meta = uiMeta[currentLanguage];
         ui.responsesFeed.innerHTML = "";
-        if (!adminEnabled) {
-          ui.responsesEmpty.hidden = false;
-          ui.responsesEmpty.textContent =
-            currentLanguage === "zh"
-              ? "仅管理员模式可查看具体回答。"
-              : "Responses are visible only in admin mode.";
-          return;
-        }
         if (responseFeedLoading) {
           ui.responsesEmpty.hidden = false;
           ui.responsesEmpty.textContent = meta.responsesLoading;
@@ -2569,7 +2537,7 @@
       };
 
       const loadResponseFeed = async () => {
-        if (!REMOTE_SYNC_ENABLED || !adminEnabled) {
+        if (!REMOTE_SYNC_ENABLED) {
           responseFeedItems = [];
           responseFeedError = null;
           responseFeedLoading = false;
@@ -2597,9 +2565,6 @@
       };
 
       const switchScreen = (target) => {
-        if (target === "stats" && !adminEnabled) {
-          return;
-        }
         if (!ui.builderView || !ui.statsView) return;
         if (target === currentScreen) {
           if (target === "stats") {
