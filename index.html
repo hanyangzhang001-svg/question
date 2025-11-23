@@ -2013,6 +2013,9 @@
         }
       };
 
+      // No-op to keep backward compatibility with earlier admin-only visibility toggles.
+      const setStatsVisibility = () => {};
+
       const applyLogoSrc = (src) => {
         if (ui.logoImage) {
           ui.logoImage.src = src || DEFAULT_LOGO_SRC;
@@ -2785,11 +2788,6 @@
       };
 
       const loadCloudStats = async () => {
-        if (!adminEnabled) {
-          statsLoading = false;
-          renderStats();
-          return;
-        }
         statsLoading = true;
         statsError = null;
         renderStats();
