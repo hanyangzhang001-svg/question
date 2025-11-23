@@ -1695,6 +1695,11 @@
             "Content-Type": "application/json"
           }
         : null;
+      // Extra headers for config read/write; pairs with RLS policy that checks x-admin-key
+      const supabaseConfigHeaders =
+        supabaseHeaders && ADMIN_PASSWORD
+          ? { ...supabaseHeaders, "x-admin-key": ADMIN_PASSWORD }
+          : supabaseHeaders;
 
       const fetchRemoteConfig = async () => {
         if (!REMOTE_SYNC_ENABLED) {
@@ -1704,7 +1709,7 @@
           const response = await fetch(
             `${SUPABASE_CONFIG_ENDPOINT}?id=eq.${SUPABASE_CONFIG_ID}&select=config`,
             {
-              headers: supabaseHeaders
+              headers: supabaseConfigHeaders || {}
             }
           );
           if (!response.ok) throw new Error("Failed to fetch remote config");
@@ -1723,7 +1728,7 @@
         try {
           const response = await fetch(SUPABASE_CONFIG_ENDPOINT, {
             method: "POST",
-            headers: { ...supabaseHeaders, Prefer: "resolution=merge-duplicates" },
+            headers: { ...(supabaseConfigHeaders || supabaseHeaders || {}), Prefer: "resolution=merge-duplicates" },
             body: JSON.stringify({
               id: SUPABASE_CONFIG_ID,
               config: payload,
