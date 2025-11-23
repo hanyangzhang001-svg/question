@@ -1852,6 +1852,7 @@
       let cloudTotals = {};
       let cloudSubmissionCount = 0;
       let cloudLastUpdated = null;
+      const openResponsesVisible = new Set();
 
       const ui = {
         logoImage: document.querySelector(".hero-logo"),
@@ -2433,6 +2434,84 @@
               note.className = "stats-text-note";
               note.textContent = meta.textQuestionNote(total);
               card.appendChild(note);
+
+              if (question.type === "text") {
+                const actionRow = document.createElement("div");
+                actionRow.style.display = "flex";
+                actionRow.style.gap = "8px";
+                actionRow.style.alignItems = "center";
+
+                const viewButton = document.createElement("button");
+                viewButton.type = "button";
+                viewButton.textContent = currentLanguage === "zh" ? "查看回答" : "View responses";
+                viewButton.className = "ghost-small";
+
+                const listContainer = document.createElement("div");
+                listContainer.dataset.questionId = question.id;
+                listContainer.className = "response-feed";
+
+                const renderList = () => {
+                  listContainer.innerHTML = "";
+                  const entries = [];
+                  responseFeedItems.forEach((record) => {
+                    const answers = record.answers && typeof record.answers === "object" ? record.answers : {};
+                    const payload = answers[question.id];
+                    if (!payload) return;
+                    const description = describeAnswer(question, payload);
+                    if (!description) return;
+                    entries.push({ submitted_at: record.submitted_at, text: description });
+                  });
+                  if (!entries.length) {
+                    const empty = document.createElement("p");
+                    empty.className = "response-empty";
+                    empty.textContent =
+                      currentLanguage === "zh" ? "暂无回答或还未刷新列表。" : "No responses yet or not refreshed.";
+                    listContainer.appendChild(empty);
+                    return;
+                  }
+                  entries
+                    .sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at))
+                    .forEach((entry) => {
+                      const item = document.createElement("article");
+                      item.className = "response-entry";
+                      const time = document.createElement("time");
+                      time.textContent = formatTimestamp(entry.submitted_at);
+                      const text = document.createElement("p");
+                      text.className = "response-answer";
+                      text.textContent = entry.text;
+                      item.appendChild(time);
+                      item.appendChild(text);
+                      listContainer.appendChild(item);
+                    });
+                };
+
+                viewButton.addEventListener("click", async () => {
+                  const input = window.prompt(
+                    currentLanguage === "zh" ? "请输入管理员密码查看回答" : "Enter admin password to view responses"
+                  );
+                  if (input === null) return;
+                  if (input.trim() !== ADMIN_PASSWORD) {
+                    alert(currentLanguage === "zh" ? "密码错误" : "Incorrect password");
+                    return;
+                  }
+                  // 确保最新数据
+                  try {
+                    await loadResponseFeed();
+                  } catch (error) {
+                    console.warn("Unable to refresh responses", error);
+                  }
+                  openResponsesVisible.add(question.id);
+                  renderList();
+                });
+
+                if (openResponsesVisible.has(question.id)) {
+                  renderList();
+                }
+
+                actionRow.appendChild(viewButton);
+                card.appendChild(actionRow);
+                card.appendChild(listContainer);
+              }
             } else {
               question.options.forEach((option) => {
                 const optionWrap = document.createElement("div");
