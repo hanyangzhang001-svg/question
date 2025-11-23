@@ -1726,13 +1726,15 @@
           return null;
         }
         try {
-          const response = await fetch(SUPABASE_CONFIG_ENDPOINT, {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/save_survey_config`, {
             method: "POST",
-            headers: { ...(supabaseConfigHeaders || supabaseHeaders || {}), Prefer: "resolution=merge-duplicates" },
+            headers: {
+              ...(supabaseHeaders || {}),
+              "Content-Type": "application/json"
+            },
             body: JSON.stringify({
-              id: SUPABASE_CONFIG_ID,
-              config: payload,
-              updated_at: new Date().toISOString()
+              payload,
+              admin_key: ADMIN_PASSWORD
             })
           });
           if (!response.ok) throw new Error("Failed to save remote config");
