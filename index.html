@@ -1823,6 +1823,7 @@
 
       const isValidQuestionSet = (list) =>
         Array.isArray(list) &&
+        list.length > 0 &&
         list.every(
           (item) =>
             typeof item === "object" &&
