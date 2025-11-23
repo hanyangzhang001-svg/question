@@ -1973,6 +1973,7 @@
         url.searchParams.delete("admin");
         window.history.replaceState({}, "", url.toString());
         setQrEditable(true);
+        setStatsVisibility(true);
       };
 
       const disableAdminMode = () => {
@@ -1990,11 +1991,25 @@
         url.searchParams.delete("admin");
         window.history.replaceState({}, "", url.toString());
         setQrEditable(false);
+        setStatsVisibility(false);
+        switchScreen("builder");
       };
 
       const setText = (el, value) => {
         if (el) {
           el.textContent = value;
+        }
+      };
+
+      const setStatsVisibility = (visible) => {
+        if (ui.statsTab) {
+          ui.statsTab.hidden = !visible;
+        }
+        if (ui.statsView) {
+          ui.statsView.hidden = !visible;
+        }
+        if (!visible && ui.builderTab) {
+          ui.builderTab.classList.add("active");
         }
       };
 
@@ -2353,6 +2368,20 @@
       };
 
       const renderStats = () => {
+        if (!adminEnabled) {
+          if (ui.statsContent) {
+            ui.statsContent.innerHTML =
+              currentLanguage === "zh"
+                ? "<p class=\"stats-empty\">仅管理员模式可查看统计。</p>"
+                : "<p class=\"stats-empty\">Stats are visible only in admin mode.</p>";
+          }
+          if (ui.statsEmpty) {
+            ui.statsEmpty.hidden = false;
+            ui.statsEmpty.textContent =
+              currentLanguage === "zh" ? "仅管理员模式可查看统计。" : "Stats are visible only in admin mode.";
+          }
+          return;
+        }
         if (!ui.statsContent) return;
         const meta = uiMeta[currentLanguage];
         if (statsLoading) {
@@ -2562,6 +2591,9 @@
       };
 
       const switchScreen = (target) => {
+        if (target === "stats" && !adminEnabled) {
+          return;
+        }
         if (!ui.builderView || !ui.statsView) return;
         if (target === currentScreen) {
           if (target === "stats") {
@@ -2782,6 +2814,11 @@
       };
 
       const loadCloudStats = async () => {
+        if (!adminEnabled) {
+          statsLoading = false;
+          renderStats();
+          return;
+        }
         statsLoading = true;
         statsError = null;
         renderStats();
@@ -3043,6 +3080,7 @@
         loadResponseFeed();
         updateUIText();
         setQrEditable(adminEnabled);
+        setStatsVisibility(adminEnabled);
       };
 
       bootstrap();
