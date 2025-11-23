@@ -1700,6 +1700,11 @@
         supabaseHeaders && ADMIN_PASSWORD
           ? { ...supabaseHeaders, "x-admin-key": ADMIN_PASSWORD }
           : supabaseHeaders;
+      // Admin-only headers for reading responses/stats; requires matching RLS on survey_responses
+      const supabaseAdminHeaders =
+        supabaseHeaders && ADMIN_PASSWORD
+          ? { ...supabaseHeaders, "x-admin-key": ADMIN_PASSWORD }
+          : supabaseHeaders;
 
       const fetchRemoteConfig = async () => {
         if (!REMOTE_SYNC_ENABLED) {
@@ -2455,6 +2460,14 @@
         if (!ui.responsesFeed || !ui.responsesEmpty) return;
         const meta = uiMeta[currentLanguage];
         ui.responsesFeed.innerHTML = "";
+        if (!adminEnabled) {
+          ui.responsesEmpty.hidden = false;
+          ui.responsesEmpty.textContent =
+            currentLanguage === "zh"
+              ? "仅管理员模式可查看具体回答。"
+              : "Responses are visible only in admin mode.";
+          return;
+        }
         if (responseFeedLoading) {
           ui.responsesEmpty.hidden = false;
           ui.responsesEmpty.textContent = meta.responsesLoading;
@@ -2513,7 +2526,7 @@
           limit: RESPONSE_FETCH_LIMIT
         });
         const requestUrl = `${SUPABASE_RESPONSES_ENDPOINT}?${params.toString()}`;
-        const response = await fetch(requestUrl, { headers: supabaseHeaders || {} });
+        const response = await fetch(requestUrl, { headers: supabaseAdminHeaders || {} });
         if (!response.ok) {
           throw new Error(`Failed to load response feed: ${response.status}`);
         }
@@ -2521,7 +2534,7 @@
       };
 
       const loadResponseFeed = async () => {
-        if (!REMOTE_SYNC_ENABLED) {
+        if (!REMOTE_SYNC_ENABLED || !adminEnabled) {
           responseFeedItems = [];
           responseFeedError = null;
           responseFeedLoading = false;
@@ -2784,7 +2797,7 @@
             limit: STATS_FETCH_LIMIT.toString()
           });
           const response = await fetch(`${SUPABASE_RESPONSES_ENDPOINT}?${params.toString()}`, {
-            headers: supabaseHeaders || {}
+            headers: supabaseAdminHeaders || {}
           });
           if (!response.ok) {
             throw new Error(`Failed to load cloud stats (${response.status})`);
