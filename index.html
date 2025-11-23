@@ -2449,6 +2449,7 @@
                 const listContainer = document.createElement("div");
                 listContainer.dataset.questionId = question.id;
                 listContainer.className = "response-feed";
+                listContainer.style.display = "none";
 
                 const renderList = () => {
                   listContainer.innerHTML = "";
@@ -2500,13 +2501,9 @@
                   } catch (error) {
                     console.warn("Unable to refresh responses", error);
                   }
-                  openResponsesVisible.add(question.id);
+                  listContainer.style.display = "block";
                   renderList();
                 });
-
-                if (openResponsesVisible.has(question.id)) {
-                  renderList();
-                }
 
                 actionRow.appendChild(viewButton);
                 card.appendChild(actionRow);
