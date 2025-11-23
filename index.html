@@ -1730,28 +1730,25 @@
         if (!REMOTE_SYNC_ENABLED) {
           return null;
         }
-        try {
-          const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/save_survey_config`, {
-            method: "POST",
-            headers: {
-              ...(supabaseHeaders || {}),
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              payload,
-              admin_key: ADMIN_PASSWORD
-            })
-          });
-          if (!response.ok) throw new Error("Failed to save remote config");
-          const raw = await response.text();
-          if (!raw) {
-            return null;
-          }
-          return JSON.parse(raw);
-        } catch (error) {
-          console.error("Unable to save remote config", error);
-          throw error;
+        const body = {
+          id: SUPABASE_CONFIG_ID,
+          config: payload,
+          updated_at: new Date().toISOString()
+        };
+        // 直接 upsert 到表，避免 rpc 忽略字段
+        const response = await fetch(SUPABASE_CONFIG_ENDPOINT, {
+          method: "POST",
+          headers: {
+            ...(supabaseHeaders || {}),
+            "Content-Type": "application/json",
+            Prefer: "resolution=merge-duplicates"
+          },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to save remote config (${response.status})`);
         }
+        return null;
       };
 
       const saveResponseSubmission = async (answers) => {
