@@ -1933,9 +1933,13 @@
         ui.qrUrlInput.value = initialUrl;
         persistQrUrl(initialUrl);
         renderQrCode(initialUrl);
+        setQrEditable(adminEnabled);
       };
 
       const updateQrFromInput = () => {
+        if (!adminEnabled) {
+          return;
+        }
         if (!ui.qrUrlInput) return;
         const url = ui.qrUrlInput.value.trim();
         const meta = uiMeta[currentLanguage];
@@ -3025,6 +3029,7 @@
         loadCloudStats();
         loadResponseFeed();
         updateUIText();
+        setQrEditable(adminEnabled);
       };
 
       bootstrap();
