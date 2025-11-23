@@ -1963,6 +1963,7 @@
         const url = new URL(window.location.href);
         url.searchParams.delete("admin");
         window.history.replaceState({}, "", url.toString());
+        setQrEditable(true);
       };
 
       const disableAdminMode = () => {
@@ -1979,11 +1980,22 @@
         const url = new URL(window.location.href);
         url.searchParams.delete("admin");
         window.history.replaceState({}, "", url.toString());
+        setQrEditable(false);
       };
 
       const setText = (el, value) => {
         if (el) {
           el.textContent = value;
+        }
+      };
+
+      const setQrEditable = (editable) => {
+        if (ui.qrUrlInput) {
+          ui.qrUrlInput.disabled = !editable;
+          ui.qrUrlInput.readOnly = !editable;
+        }
+        if (ui.qrRefresh) {
+          ui.qrRefresh.disabled = !editable;
         }
       };
 
