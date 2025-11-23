@@ -2126,6 +2126,15 @@
         applyLogoSrc(DEFAULT_LOGO_SRC);
       };
 
+      const getStoredLogo = () => {
+        try {
+          return localStorage.getItem(LOGO_STORAGE_KEY);
+        } catch (error) {
+          console.warn("Unable to get stored logo", error);
+          return null;
+        }
+      };
+
       const persistLogo = (dataUrl) => {
         try {
           if (dataUrl) {
@@ -2987,12 +2996,17 @@
             alert(currentLanguage === "zh" ? "已保存到本地，未配置云端同步。" : "Saved locally. Cloud sync is not configured.");
             return;
           }
+          const logoPayload =
+            currentLogoDataUrl ||
+            getStoredLogo() ||
+            (ui.logoImage?.src && ui.logoImage.src.startsWith("data:image") && ui.logoImage.src) ||
+            DEFAULT_LOGO_SRC;
           ui.saveButton.disabled = true;
           try {
             await saveRemoteConfig({
               questions,
               contentText,
-              logoDataUrl: currentLogoDataUrl,
+              logoDataUrl: logoPayload,
               qrUrl:
                 (currentQrUrl && isValidUrl(currentQrUrl) && currentQrUrl) ||
                 (loadStoredQrUrl() && isValidUrl(loadStoredQrUrl()) && loadStoredQrUrl()) ||
